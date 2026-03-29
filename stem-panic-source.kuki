@@ -196,7 +196,7 @@ function outputStateForLane(lane int) StemState
 
 # ── Entry Point ──
 
-function main()
+function init()
     _ = game.Window("Stem Panic", screenW, screenH)
         |> game.OnSetup(setup)
         |> game.OnUpdate(update)
