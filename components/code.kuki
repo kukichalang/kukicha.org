@@ -35,7 +35,7 @@ func SourceReveal() html.Fragment
                      hx-trigger="toggle[this.open] once"
                      hx-target="#source-code"
                      hx-swap="innerHTML">
-                <summary>View the Stem Panic source &mdash; 810 lines. No framework.</summary>
+                <summary>View the Stem Panic source &mdash; 810 lines. Kukicha game stdlib wraps the awesome Go game engine<a href="https://ebitengine.org/">Ebitengine</a></summary>
                 <div id="source-code">
                     <p>Loading source&hellip;</p>
                 </div>
@@ -53,3 +53,4 @@ func SourceCode(path string) html.Fragment
         return html.Render('<pre><code>Source not available.</code></pre>')
     content := cast.SmartString(raw) onerr ""
     return html.Render('<pre><code>{html.Escape(content)}</code></pre>')
+
