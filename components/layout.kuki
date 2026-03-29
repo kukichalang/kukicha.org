@@ -5,6 +5,8 @@ import "stdlib/html"
 type NavLink
     label string
     href string
+    cls string
+    dialogFor string
 
 func Layout(title string, content html.Fragment) html.Fragment
     return html.Render('
@@ -21,6 +23,21 @@ func Layout(title string, content html.Fragment) html.Fragment
             <link rel="stylesheet" href="/static/style.css" />
         </head>
         <body class="container">
+            <dialog id="playground-dialog" closedby="any">
+                <form method="dialog">
+                    <header>
+                        <h3>Playground <span class="badge warning">Coming Soon</span></h3>
+                        <p>An in-browser Kukicha editor is in the works.</p>
+                    </header>
+                    <div>
+                        <p>In the meantime, install the CLI and run locally:</p>
+                        <pre><code>go install github.com/kukichalang/kukicha@latest</code></pre>
+                    </div>
+                    <footer>
+                        <button value="close">Got it</button>
+                    </footer>
+                </form>
+            </dialog>
             {html.Embed(content)}
         </body>
         </html>
@@ -29,7 +46,10 @@ func Layout(title string, content html.Fragment) html.Fragment
 func Navbar(brand string, links list of NavLink) html.Fragment
     items := html.Render("")
     for link in links
-        items = html.Render('{html.Embed(items)} <a href="{html.Attr(link.href)}">{html.Escape(link.label)}</a>')
+        if link.dialogFor isnt ""
+            items = html.Render('{html.Embed(items)} <button class="nav-link" commandfor="{html.Attr(link.dialogFor)}" command="show-modal">{html.Escape(link.label)}</button>')
+        else
+            items = html.Render('{html.Embed(items)} <a href="{html.Attr(link.href)}" class="{html.Attr(link.cls)}">{html.Escape(link.label)}</a>')
     return html.Render('
         <nav>
             <strong>{html.Escape(brand)}</strong>

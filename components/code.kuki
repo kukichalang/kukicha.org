@@ -6,7 +6,7 @@ import "os"
 
 func CodeCompare() html.Fragment
     return html.Render('
-        <h2 style="text-align: center">Go vs Kukicha</h2>
+        <h2 style="text-align: center">Go vs Kukicha <span class="badge secondary">less noise</span></h2>
         <div class="code-compare">
             <div>
                 <h4>Go</h4>

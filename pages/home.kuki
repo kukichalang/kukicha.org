@@ -4,7 +4,7 @@ import "stdlib/html"
 
 func HomePage() html.Fragment
     nav := Navbar("kukicha", list of NavLink{
-        NavLink{label: "Playground", href: "/playground"},
+        NavLink{label: "Playground", dialogFor: "playground-dialog"},
         NavLink{label: "Tutorials", href: "#tutorials"},
         NavLink{label: "Docs", href: "/docs"},
         NavLink{label: "GitHub", href: "https://github.com/kukichalang/kukicha"},

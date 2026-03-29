@@ -9,7 +9,7 @@ RUN go install github.com/kukichalang/kukicha/cmd/kukicha@latest
 COPY . .
 
 # Build the site binary (multi-file directory compilation)
-RUN kukicha build . && mv src kukicha.org
+RUN CGO_ENABLED=0 kukicha build . && mv src kukicha.org
 
 # Runtime stage — scratch image with just the binary + static assets
 FROM scratch

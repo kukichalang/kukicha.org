@@ -4,11 +4,14 @@ import "stdlib/html"
 
 func Tutorials() html.Fragment
     return html.Render('
-        <section class="tutorials">
+        <section class="tutorials" id="tutorials">
             <h2>Start here</h2>
-            <div class="code-compare">
-                <div>
-                    <h4>I want to make something</h4>
+            <ot-tabs>
+                <div role="tablist">
+                    <button role="tab">I want to make something</button>
+                    <button role="tab">I want to understand the language</button>
+                </div>
+                <div role="tabpanel">
                     <ul>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/game/01-hello-world.md">Game tutorials</a> &mdash; 8 lessons to Breakout</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/cli-explorer-tutorial.md">CLI tool</a> &mdash; types, methods, API data</li>
@@ -16,8 +19,7 @@ func Tutorials() html.Fragment
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/agent-workflow-tutorial.md">AI agent tools</a> &mdash; MCP servers</li>
                     </ul>
                 </div>
-                <div>
-                    <h4>I want to understand the language</h4>
+                <div role="tabpanel">
                     <ul>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/absolute-beginner-tutorial.md">Absolute beginner</a> &mdash; first program</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/CLAUDE.md#kukicha-syntax-quick-reference">Quick reference</a> &mdash; Go/Python translation table</li>
@@ -25,6 +27,6 @@ func Tutorials() html.Fragment
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/production-patterns-tutorial.md">Production patterns</a> &mdash; databases, auth, retry</li>
                     </ul>
                 </div>
-            </div>
+            </ot-tabs>
         </section>
     ')

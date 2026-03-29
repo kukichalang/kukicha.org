@@ -5,14 +5,18 @@ import "stdlib/html"
 func Hero() html.Fragment
     return html.Render('
         <section class="hero">
+            <p><a class="badge success" href="https://github.com/kukichalang/kukicha/releases/latest" title="See what&#39;s new in v0.0.27">v0.0.27 &mdash; latest release &nearr;</a></p>
             <h1>A programming language you can read — running as a game in your browser.</h1>
             <p class="subtitle">Stem Panic is written in Kukicha. Kukicha compiles to Go and runs anywhere — including WASM.</p>
-            <div class="wasm-container"
-                 id="wasm-container"
-                 hx-get="/wasm-player"
-                 hx-trigger="click once"
-                 hx-swap="innerHTML">
-                <button class="primary">Play Stem Panic</button>
+            <div class="hero-cta">
+                <div class="wasm-container"
+                     id="wasm-container"
+                     hx-get="/wasm-player"
+                     hx-trigger="click once"
+                     hx-swap="innerHTML">
+                    <button data-variant="primary" class="large">&#9654; Play Stem Panic</button>
+                </div>
+                <a class="button outline large" href="https://github.com/kukichalang/kukicha">Get Started &rarr;</a>
             </div>
             <p><small>Running as WASM in your browser. No install, no signup.
                 Built with <a href="https://ebitengine.org/">Ebitengine</a> by Hajime Hoshi.</small></p>
