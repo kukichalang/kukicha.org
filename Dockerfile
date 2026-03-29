@@ -1,5 +1,5 @@
 # Build stage — compile Kukicha source to a static binary
-FROM golang:1.24 AS build
+FROM golang:1.26 AS build
 WORKDIR /src
 
 # Install kukicha compiler
@@ -15,7 +15,6 @@ RUN kukicha build .
 FROM scratch
 COPY --from=build /src/kukicha.org /kukicha.org
 COPY --from=build /src/static /static
-COPY --from=build /src/stem-panic-source.kuki /stem-panic-source.kuki
 
 EXPOSE 8080
 ENTRYPOINT ["/kukicha.org"]

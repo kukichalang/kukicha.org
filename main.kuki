@@ -8,7 +8,7 @@ import "stdlib/http" as httphelper
 import "net/http"
 
 # Path to the Stem Panic source (bundled in repo for source reveal)
-var stemPanicSource string = "stem-panic-source.kuki"
+var stemPanicSource string = "static/stem-panic-source.txt"
 
 func main()
     mux := http.NewServeMux()
@@ -22,6 +22,16 @@ func main()
     # HTMX partial: loads the WASM game player on click
     mux.HandleFunc("GET /wasm-player", (w http.ResponseWriter, r reference http.Request) =>
         html.WriteTo(w, WasmPlayer()) onerr discard
+    )
+
+    # Standalone game page (loaded in iframe)
+    mux.HandleFunc("GET /game", (w http.ResponseWriter, r reference http.Request) =>
+        html.WriteTo(w, GamePage()) onerr discard
+    )
+
+    # HTMX partial: close button returns the play button
+    mux.HandleFunc("GET /wasm-close", (w http.ResponseWriter, r reference http.Request) =>
+        html.WriteTo(w, WasmPlayButton()) onerr discard
     )
 
     # HTMX partial: loads syntax-highlighted Stem Panic source on expand

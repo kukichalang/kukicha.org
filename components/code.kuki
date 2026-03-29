@@ -31,18 +31,18 @@ func CodeCompare() html.Fragment
 func SourceReveal() html.Fragment
     return html.Render('
         <section class="source-reveal">
-            <details>
-                <summary>View the source &mdash; 810 lines. No framework.</summary>
-                <div id="source-code"
-                     hx-get="/source"
-                     hx-trigger="toggle once"
+            <details hx-get="/source"
+                     hx-trigger="toggle[this.open] once"
+                     hx-target="#source-code"
                      hx-swap="innerHTML">
+                <summary>View the Stem Panic source &mdash; 810 lines. No framework.</summary>
+                <div id="source-code">
                     <p>Loading source&hellip;</p>
                 </div>
             </details>
             <p class="meta">
-                Built across an <a href="/tutorials/game/01-hello-world">8-lesson tutorial series</a>
-                that starts with Hello World and ends here.
+                Want to build your own? The <a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/game/01-hello-world.md">8-lesson game tutorial</a>
+                takes you from Hello World to a playable game in Kukicha.
             </p>
         </section>
     ')

@@ -1,0 +1,13 @@
+# Generated files — recreated during build
+main.go
+kukicha.org
+
+# Docs and config not needed in the image
+README.md
+AGENTS.md
+NOTICE
+app.yaml
+
+# Local dev artifacts
+.git
+.kukicha

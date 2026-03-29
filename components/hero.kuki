@@ -5,8 +5,8 @@ import "stdlib/html"
 func Hero() html.Fragment
     return html.Render('
         <section class="hero">
-            <h1>A game that teaches you a programming language, written in that programming language.</h1>
-            <p class="subtitle">Kukicha compiles to Go. Ship as a single binary, WASM, or anywhere Go runs.</p>
+            <h1>A programming language you can read — running as a game in your browser.</h1>
+            <p class="subtitle">Stem Panic is written in Kukicha. Kukicha compiles to Go and runs anywhere — including WASM.</p>
             <div class="wasm-container"
                  id="wasm-container"
                  hx-get="/wasm-player"
@@ -21,10 +21,36 @@ func Hero() html.Fragment
 
 func WasmPlayer() html.Fragment
     return html.Render('
-        <canvas id="game-canvas" width="640" height="480"></canvas>
-        <script>
-            const go = new Go();
-            WebAssembly.instantiateStreaming(fetch("/static/wasm/stem-panic.wasm"), go.importObject)
-                .then(result => go.run(result.instance));
-        </script>
+        <div style="text-align: right; margin-bottom: 0.5rem;">
+            <button hx-get="/wasm-close"
+                    hx-target="#wasm-container"
+                    hx-swap="innerHTML"
+                    style="padding: 4px 12px; font-size: 0.85rem; cursor: pointer;">
+                Close Game
+            </button>
+        </div>
+        <iframe src="/game" width="640" height="480"
+                style="border: 2px solid var(--color-border); border-radius: 4px; max-width: 100%; display: block; margin: 0 auto;">
+        </iframe>
+    ')
+
+func GamePage() html.Fragment
+    return html.Render('
+        <!DOCTYPE html>
+        <html><head><meta charset="utf-8">
+        <link rel="stylesheet" href="/static/game.css" />
+        </head><body>
+        <script src="/static/wasm_exec.js"></script>
+        <script src="/static/game.js"></script>
+        </body></html>
+    ')
+
+func WasmPlayButton() html.Fragment
+    return html.Render('
+        <button class="primary"
+                hx-get="/wasm-player"
+                hx-target="#wasm-container"
+                hx-swap="innerHTML">
+            Play Stem Panic
+        </button>
     ')
