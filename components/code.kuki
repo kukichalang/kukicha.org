@@ -1,0 +1,55 @@
+# components/code.kuki — Code comparison and source reveal
+
+import "stdlib/html"
+import "stdlib/cast"
+import "os"
+
+func CodeCompare() html.Fragment
+    return html.Render('
+        <h2 style="text-align: center">Go vs Kukicha</h2>
+        <div class="code-compare">
+            <div>
+                <h4>Go</h4>
+                <pre><code>data, err := fetchData()
+        if err != nil \{
+            return fmt.Errorf("fetch: %w", err)
+        \}
+        result, err := parse(data)
+        if err != nil \{
+            return fmt.Errorf("parse: %w", err)
+        \}</code></pre>
+            </div>
+            <div>
+                <h4>Kukicha</h4>
+                <pre><code>result := fetchData()
+            |> parse()
+            onerr return explain "pipeline failed"</code></pre>
+            </div>
+        </div>
+    ')
+
+func SourceReveal() html.Fragment
+    return html.Render('
+        <section class="source-reveal">
+            <details>
+                <summary>View the source &mdash; 810 lines. No framework.</summary>
+                <div id="source-code"
+                     hx-get="/source"
+                     hx-trigger="toggle once"
+                     hx-swap="innerHTML">
+                    <p>Loading source&hellip;</p>
+                </div>
+            </details>
+            <p class="meta">
+                Built across an <a href="/tutorials/game/01-hello-world">8-lesson tutorial series</a>
+                that starts with Hello World and ends here.
+            </p>
+        </section>
+    ')
+
+func SourceCode(path string) html.Fragment
+    raw, readErr := os.ReadFile(path)
+    if readErr isnt empty
+        return html.Render('<pre><code>Source not available.</code></pre>')
+    content := cast.SmartString(raw) onerr ""
+    return html.Render('<pre><code>{html.Escape(content)}</code></pre>')

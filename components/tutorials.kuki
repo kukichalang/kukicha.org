@@ -1,0 +1,30 @@
+# components/tutorials.kuki — Tutorial funnel section
+
+import "stdlib/html"
+
+func Tutorials() html.Fragment
+    return html.Render('
+        <section class="tutorials">
+            <h2>Start here</h2>
+            <div class="code-compare">
+                <div>
+                    <h4>I want to make something</h4>
+                    <ul>
+                        <li><a href="/tutorials/game/01-hello-world">Game tutorials</a> &mdash; 8 lessons to Breakout</li>
+                        <li><a href="/tutorials/cli-explorer">CLI tool</a> &mdash; types, methods, API data</li>
+                        <li><a href="/tutorials/web-app">Web app</a> &mdash; HTTP servers, REST APIs</li>
+                        <li><a href="/tutorials/agent-workflow">AI agent tools</a> &mdash; MCP servers</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>I want to understand the language</h4>
+                    <ul>
+                        <li><a href="/tutorials/absolute-beginner">Absolute beginner</a> &mdash; first program</li>
+                        <li><a href="/docs/quick-reference">Quick reference</a> &mdash; Go/Python translation table</li>
+                        <li><a href="/docs/stdlib">Stdlib reference</a> &mdash; 41+ packages</li>
+                        <li><a href="/tutorials/production-patterns">Production patterns</a> &mdash; databases, auth, retry</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    ')

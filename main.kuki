@@ -1,0 +1,37 @@
+# kukicha.org — entry point
+# Routes, server startup, static file serving.
+# Run: kukicha build . && ./kukicha.org
+# Or:  kukicha run main.kuki
+
+import "stdlib/html"
+import "stdlib/http" as httphelper
+import "net/http"
+
+# Path to the Stem Panic source (bundled in repo for source reveal)
+var stemPanicSource string = "stem-panic-source.kuki"
+
+func main()
+    mux := http.NewServeMux()
+
+    # Full page: GET /
+    mux.HandleFunc("GET /", (w http.ResponseWriter, r reference http.Request) =>
+        page := Layout("Kukicha — a language you can read", HomePage())
+        html.WriteTo(w, page) onerr discard
+    )
+
+    # HTMX partial: loads the WASM game player on click
+    mux.HandleFunc("GET /wasm-player", (w http.ResponseWriter, r reference http.Request) =>
+        html.WriteTo(w, WasmPlayer()) onerr discard
+    )
+
+    # HTMX partial: loads syntax-highlighted Stem Panic source on expand
+    mux.HandleFunc("GET /source", (w http.ResponseWriter, r reference http.Request) =>
+        html.WriteTo(w, SourceCode(stemPanicSource)) onerr discard
+    )
+
+    # Serve static files (WASM binaries, wasm_exec.js)
+    fs := http.FileServer(http.Dir("static"))
+    mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
+
+    print("kukicha.org listening on http://localhost:8080")
+    httphelper.Serve(":8080", mux) onerr panic "{error}"

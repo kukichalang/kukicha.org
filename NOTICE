@@ -1,0 +1,15 @@
+kukicha.org
+Copyright 2025-2026 The Kukicha Authors
+
+This project includes or depends on the following third-party software:
+
+Ebitengine — https://ebitengine.org/
+  Copyright 2013 Hajime Hoshi
+  Licensed under the Apache License, Version 2.0
+  The game demos (Stem Panic) are built with Ebitengine via
+  github.com/kukichalang/game.
+
+templ — https://templ.guide/
+  Copyright 2023 Adrian Hesketh
+  Kukicha's stdlib/html component model is inspired by templ's design.
+  No templ code is included (credit is courtesy, not a license requirement).

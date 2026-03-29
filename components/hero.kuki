@@ -1,0 +1,30 @@
+# components/hero.kuki — Hero section with WASM game embed
+
+import "stdlib/html"
+
+func Hero() html.Fragment
+    return html.Render('
+        <section class="hero">
+            <h1>A game that teaches you a programming language, written in that programming language.</h1>
+            <p class="subtitle">Kukicha compiles to Go. Ship as a single binary, WASM, or anywhere Go runs.</p>
+            <div class="wasm-container"
+                 id="wasm-container"
+                 hx-get="/wasm-player"
+                 hx-trigger="click once"
+                 hx-swap="innerHTML">
+                <button class="primary">Play Stem Panic</button>
+            </div>
+            <p><small>Running as WASM in your browser. No install, no signup.
+                Built with <a href="https://ebitengine.org/">Ebitengine</a> by Hajime Hoshi.</small></p>
+        </section>
+    ')
+
+func WasmPlayer() html.Fragment
+    return html.Render('
+        <canvas id="game-canvas" width="640" height="480"></canvas>
+        <script>
+            const go = new Go();
+            WebAssembly.instantiateStreaming(fetch("/static/wasm/stem-panic.wasm"), go.importObject)
+                .then(result => go.run(result.instance));
+        </script>
+    ')

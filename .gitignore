@@ -1,0 +1,6 @@
+# Generated
+*.go
+kukicha.org
+
+# OS
+.DS_Store

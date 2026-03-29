@@ -1,0 +1,27 @@
+# components/cards.kuki — Feature cards and card grid
+
+import "stdlib/html"
+
+type Feature
+    title string
+    body string
+    href string
+
+func Card(f Feature) html.Fragment
+    return html.Render('
+        <article class="card">
+            <h3>{html.Escape(f.title)}</h3>
+            <p>{html.Escape(f.body)}</p>
+            <a href="{html.Attr(f.href)}">Learn more &rarr;</a>
+        </article>
+    ')
+
+func CardGrid(features list of Feature) html.Fragment
+    cards := html.Render("")
+    for f in features
+        cards = html.Render('{html.Embed(cards)}{html.Embed(Card(f))}')
+    return html.Render('
+        <div class="card-grid">
+            {html.Embed(cards)}
+        </div>
+    ')

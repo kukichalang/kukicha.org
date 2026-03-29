@@ -1,0 +1,37 @@
+# pages/home.kuki — Landing page composition
+
+import "stdlib/html"
+
+func HomePage() html.Fragment
+    nav := Navbar("kukicha", list of NavLink{
+        NavLink{label: "Playground", href: "/playground"},
+        NavLink{label: "Tutorials", href: "#tutorials"},
+        NavLink{label: "Docs", href: "/docs"},
+        NavLink{label: "GitHub", href: "https://github.com/kukichalang/kukicha"},
+    })
+
+    hero := Hero()
+
+    features := CardGrid(list of Feature{
+        Feature{
+            title: "Read what AI writes",
+            body: "Kukicha is designed for humans to review AI-generated code. English keywords, no symbol soup, 1:1 mapping to Go and Python concepts.",
+            href: "/tutorials/agent-workflow",
+        },
+        Feature{
+            title: "Catch AI mistakes at compile time",
+            body: "The compiler flags SQL injection, XSS, SSRF, path traversal, command injection, and open redirects before your code ships.",
+            href: "/tutorials/production-patterns",
+        },
+        Feature{
+            title: "Ship anywhere Go runs",
+            body: "Single binary. No runtime. WASM for the browser. Goroutines for concurrency.",
+            href: "/tutorials/cli-explorer",
+        },
+    })
+
+    source := SourceReveal()
+    code := CodeCompare()
+    tutorials := Tutorials()
+    footer := Footer()
+    return html.Join(nav, hero, source, features, code, tutorials, footer)
