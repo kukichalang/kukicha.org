@@ -7,9 +7,29 @@ import "stdlib/html"
 import "stdlib/http" as httphelper
 import "stdlib/env"
 import "net/http"
+import "os"
+import "strings"
 
 # Path to the Stem Panic source (bundled in repo for source reveal)
 var stemPanicSource string = "static/stem-panic-source.txt"
+
+# serveWasm serves a .wasm file with Brotli encoding when the client supports
+# it. The .wasm.br file must exist alongside the .wasm (generated at build time
+# by the Dockerfile). Falls back to plain serving if .br is absent or the
+# client does not advertise Brotli support.
+func serveWasm(path string, w http.ResponseWriter, r reference http.Request)
+    w.Header().Set("Vary", "Accept-Encoding")
+    w.Header().Set("Content-Type", "application/wasm")
+    w.Header().Set("Cache-Control", "public, max-age=3600")
+    if strings.Contains(r.Header.Get("Accept-Encoding"), "br")
+        data, readErr := os.ReadFile(path + ".br")
+        if readErr isnt empty
+            http.ServeFile(w, r, path)
+            return
+        w.Header().Set("Content-Encoding", "br")
+        w.Write(data)
+        return
+    http.ServeFile(w, r, path)
 
 func main()
     mux := http.NewServeMux()
@@ -40,7 +60,15 @@ func main()
         html.WriteTo(w, SourceCode(stemPanicSource)) onerr discard
     )
 
-    # Serve static files (WASM binaries, wasm_exec.js)
+    # WASM files — served with Brotli encoding when the client supports it
+    mux.HandleFunc("GET /static/wasm/kukicha.wasm", (w http.ResponseWriter, r reference http.Request) =>
+        serveWasm("static/wasm/kukicha.wasm", w, r)
+    )
+    mux.HandleFunc("GET /static/wasm/stem-panic.wasm", (w http.ResponseWriter, r reference http.Request) =>
+        serveWasm("static/wasm/stem-panic.wasm", w, r)
+    )
+
+    # Serve static files (CSS, JS, wasm_exec.js)
     fs := http.FileServer(http.Dir("static"))
     mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
 

@@ -23,21 +23,7 @@ func Layout(title string, content html.Fragment) html.Fragment
             <link rel="stylesheet" href="/static/style.css" />
         </head>
         <body class="container">
-            <dialog id="playground-dialog" closedby="any">
-                <form method="dialog">
-                    <header>
-                        <h3>Playground <span class="badge warning">Coming Soon</span></h3>
-                        <p>An in-browser Kukicha editor is in the works.</p>
-                    </header>
-                    <div>
-                        <p>In the meantime, install the CLI and run locally:</p>
-                        <pre><code>go install github.com/kukichalang/kukicha@latest</code></pre>
-                    </div>
-                    <footer>
-                        <button value="close">Got it</button>
-                    </footer>
-                </form>
-            </dialog>
+            {html.Embed(PlaygroundDialog())}
             {html.Embed(content)}
         </body>
         </html>
@@ -71,7 +57,7 @@ func Footer() html.Fragment
                 Games powered by <a href="https://ebitengine.org/">Ebitengine</a> &middot;
                 HTML inspired by <a href="https://templ.guide/">templ</a>
             </small></p>
-            <p><small>Kukicha v0.0.28</small></p>
+            <p><small>Kukicha v0.0.29</small></p>
             <p><small>This site is <a href="https://github.com/kukichalang/kukicha.org">built in Kukicha</a></small></p>
         </footer>
     ')

@@ -1,0 +1,52 @@
+# components/playground.kuki — In-browser Kukicha → Go transpiler playground
+#
+# The WASM compiler (static/wasm/kukicha.wasm) loads lazily when the dialog
+# opens. playground.js registers window.kukichaTranspile and polls until it is
+# available, then starts the live transpile loop.
+
+import "stdlib/html"
+
+func PlaygroundDialog() html.Fragment
+    return html.Render('
+        <dialog id="playground-dialog" closedby="any">
+            <div class="playground-shell">
+                <div class="playground-header">
+                    <strong>Playground</strong> &mdash; Kukicha &rarr; Go
+                    <span id="playground-status" class="playground-status"></span>
+                    <form method="dialog" style="display:inline;margin:0;margin-left:auto">
+                        <button value="close" class="playground-close" aria-label="Close">&times;</button>
+                    </form>
+                </div>
+                <div class="playground-toolbar">
+                    <label for="playground-example">Example:</label>
+                    <select id="playground-example">
+                        <option value="hello">Hello World</option>
+                        <option value="pipes">Pipes &amp; filter</option>
+                        <option value="onerr">Error handling</option>
+                    </select>
+                </div>
+                <div class="playground-panes">
+                    <div class="playground-pane">
+                        <div class="playground-pane-label">Kukicha</div>
+                        <textarea id="playground-input"
+                                  spellcheck="false"
+                                  autocorrect="off"
+                                  autocapitalize="off"></textarea>
+                        <div id="playground-errors" class="playground-errors" hidden></div>
+                    </div>
+                    <div class="playground-pane">
+                        <div class="playground-pane-label">Generated Go</div>
+                        <textarea id="playground-output"
+                                  readonly
+                                  spellcheck="false"
+                                  placeholder="Generated Go will appear here once the compiler loads&hellip;"></textarea>
+                        <div class="playground-hint">
+                            <code>//line</code> directives map each statement back to your Kukicha source.
+                            Production builds strip them: <code>kukicha build --no-line-directives</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </dialog>
+        <script src="/static/playground.js" defer></script>
+    ')

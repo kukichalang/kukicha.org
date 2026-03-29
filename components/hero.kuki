@@ -5,7 +5,7 @@ import "stdlib/html"
 func Hero() html.Fragment
     return html.Render('
         <section class="hero">
-            <p><a class="badge success" href="https://github.com/kukichalang/kukicha/releases/latest" title="See what&#39;s new in v0.0.28">v0.0.28 &mdash; latest release &nearr;</a></p>
+            <p><a class="badge success" href="https://github.com/kukichalang/kukicha/releases/latest" title="See what&#39;s new in v0.0.29">v0.0.29 &mdash; latest release &nearr;</a></p>
             <h1>A programming language you can read — running as a game in your browser.</h1>
             <p class="subtitle">Stem Panic is written in Kukicha. Kukicha compiles to Go and runs anywhere — including WASM.</p>
             <div class="hero-cta">

@@ -3,5 +3,8 @@
 kukicha.org
 .kukicha/
 
+# Pre-compressed assets (generated during Docker build, not committed)
+*.br
+
 # OS
 .DS_Store
