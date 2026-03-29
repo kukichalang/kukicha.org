@@ -1,0 +1,30 @@
+steps:
+  # 1. Build the scratch image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build', 
+      '-t', 'us-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/kukicha-org:$COMMIT_SHA', 
+      '.'
+    ]
+
+  # 2. Push to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push', 
+      'us-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/kukicha-org:$COMMIT_SHA'
+    ]
+
+  # 3. Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: [
+      'run', 'deploy', 'kukicha-org',
+      '--image', 'us-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/kukicha-org:$COMMIT_SHA',
+      '--region', 'us-west1',
+      '--allow-unauthenticated',
+      '--set-env-vars', 'BASE_URL=https://kukicha.org'
+    ]
+
+# This tells Cloud Build which image was produced
+images:
+  - 'us-west1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/kukicha-org:$COMMIT_SHA'
