@@ -37,11 +37,11 @@ func Navbar(brand string, links list of NavLink) html.Fragment
         else
             items = html.Render('{html.Embed(items)} <a href="{html.Attr(link.href)}" class="{html.Attr(link.cls)}">{html.Escape(link.label)}</a>')
     return html.Render('
-        <nav>
+        <nav data-topnav>
             <strong>{html.Escape(brand)}</strong>
-            <span>{html.Embed(items)}</span>
+            <span style="flex:1"></span>
+            {html.Embed(items)}
         </nav>
-        <hr />
     ')
 
 func Footer() html.Fragment

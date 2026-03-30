@@ -15,7 +15,7 @@ func HomePage() html.Fragment
     features := CardGrid(list of Feature{
         Feature{
             title: "Read what AI writes",
-            body: "Kukicha is designed for humans to review AI-generated code. English keywords, no symbol soup, 1:1 mapping to Go and Python concepts.",
+            body: "Kukicha is designed for humans to review AI-generated code. English keywords, fewer symbols, 1:1 mapping to Go and Python concepts.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/agent-workflow-tutorial.md",
         },
         Feature{
