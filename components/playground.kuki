@@ -24,6 +24,7 @@ func PlaygroundDialog() html.Fragment
                         <option value="pipes">Pipes &amp; filter</option>
                         <option value="onerr">Error handling</option>
                     </select>
+                    <button id="playground-run" class="playground-run" disabled>Run</button>
                 </div>
                 <div class="playground-panes">
                     <div class="playground-pane">
@@ -45,6 +46,13 @@ func PlaygroundDialog() html.Fragment
                             Production builds strip them: <code>kukicha build --no-line-directives</code>
                         </div>
                     </div>
+                </div>
+                <div id="playground-output-section" class="playground-output-section" hidden>
+                    <div class="playground-pane-label">Output</div>
+                    <pre id="playground-run-output" class="playground-run-output"></pre>
+                </div>
+                <div class="playground-footer">
+                    Execution powered by <a href="https://go.dev" target="_blank" rel="noopener">go.dev</a>
                 </div>
             </div>
         </dialog>

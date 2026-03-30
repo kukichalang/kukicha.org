@@ -27,9 +27,23 @@ components/
 pages/
   home.kuki             # HomePage() — composes all components
 static/
+  wasm/kukicha.wasm     # WASM-compiled Kukicha compiler (playground)
   wasm/stem-panic.wasm  # Pre-built WASM game demo
   wasm_exec.js          # Go WASM support
+  playground.js         # Playground logic (transpile + run)
 ```
+
+## Playground
+
+The playground transpiles Kukicha → Go in-browser via WASM, then executes the
+generated Go by proxying to [go.dev](https://go.dev)'s compile API (`/api/compile` → `go.dev/_/compile`).
+
+Since go.dev doesn't have Kukicha's stdlib packages, `playground.js` shims them
+before sending: it replaces `github.com/kukichalang/kukicha/stdlib/*` imports
+with inlined Go equivalents (see `STDLIB_SHIMS` in `playground.js`). The
+"Generated Go" pane still shows the real imports — shims are only applied for
+execution. A future version will run Kukicha natively in a sandboxed backend,
+removing the need for shims.
 
 ## Credits
 

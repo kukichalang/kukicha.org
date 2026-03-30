@@ -31,9 +31,15 @@ footer { text-align: center; padding: 2rem 0; color: var(--color-text-secondary)
 .playground-pane { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--color-border); }
 .playground-pane:last-child { border-right: none; }
 .playground-pane-label { padding: 0.35rem 1rem; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-secondary); border-bottom: 1px solid var(--color-border); flex-shrink: 0; }
-.playground-pane textarea { flex: 1; width: 100%; box-sizing: border-box; border: none; resize: none; font-family: monospace; font-size: 0.82rem; padding: 0.75rem 1rem; outline: none; background: transparent; min-height: 0; }
+.playground-pane textarea { flex: 1; width: 100%; box-sizing: border-box; border: none; resize: none; font-family: monospace; font-size: 0.82rem; padding: 0.75rem 1rem; outline: none; background: transparent; color: var(--color-text); min-height: 0; }
 .playground-errors { padding: 0.5rem 1rem; font-family: monospace; font-size: 0.8rem; color: var(--color-danger, #c00); background: var(--color-bg-alt, #fff5f5); border-top: 1px solid var(--color-border); white-space: pre-wrap; flex-shrink: 0; }
 .playground-hint { padding: 0.35rem 1rem; font-size: 0.75rem; color: var(--color-text-secondary); border-top: 1px solid var(--color-border); flex-shrink: 0; }
+.playground-run { margin-left: auto; }
+.playground-output-section { border-top: 1px solid var(--color-border); flex-shrink: 0; }
+.playground-run-output { margin: 0; padding: 0.75rem 1rem; font-family: monospace; font-size: 0.82rem; white-space: pre-wrap; max-height: 10rem; overflow-y: auto; background: var(--color-bg-alt); color: var(--color-text); }
+.playground-run-output.error { color: var(--color-danger, #c00); }
+.playground-footer { padding: 0.5rem 1rem; font-size: 0.75rem; color: var(--color-text-secondary); border-top: 1px solid var(--color-border); text-align: right; flex-shrink: 0; }
+.playground-footer a { color: var(--color-primary); }
 
 @media (max-width: 600px) {
     .code-compare { grid-template-columns: 1fr; }

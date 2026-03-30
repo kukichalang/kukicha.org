@@ -60,6 +60,8 @@ func main()
                     wasmReady = true;
                     wasmLoading = false;
                     setStatus('', '');
+                    var btn = runEl();
+                    if (btn) btn.disabled = false;
                     doTranspile();
                 }
             }, 50);
@@ -96,6 +98,92 @@ func main()
         debounceTimer = setTimeout(doTranspile, 300);
     }
 
+    function runEl()       { return document.getElementById('playground-run'); }
+    function outputSecEl() { return document.getElementById('playground-output-section'); }
+    function runOutputEl() { return document.getElementById('playground-run-output'); }
+
+    // Rewrite generated Go so it runs on go.dev (which lacks kukicha stdlib).
+    // Replace kukicha stdlib imports with inlined generic helpers.
+    var STDLIB_SHIMS = {
+        'github.com/kukichalang/kukicha/stdlib/slice': {
+            funcs: {
+                'slice.Filter': 'kukichaSliceFilter',
+                'slice.Map':    'kukichaSliceMap',
+            },
+            code: '\nfunc kukichaSliceFilter[T any](items []T, predicate func(T) bool) []T {\n\tresult := make([]T, 0)\n\tfor _, item := range items {\n\t\tif predicate(item) {\n\t\t\tresult = append(result, item)\n\t\t}\n\t}\n\treturn result\n}\n\nfunc kukichaSliceMap[T any, R any](items []T, transform func(T) R) []R {\n\tresult := make([]R, len(items))\n\tfor i, item := range items {\n\t\tresult[i] = transform(item)\n\t}\n\treturn result\n}\n',
+        },
+    };
+
+    function shimGoSource(source) {
+        var shimmed = source;
+        var appendCode = '';
+        for (var pkg in STDLIB_SHIMS) {
+            // Check if this kukicha stdlib package is imported
+            if (shimmed.indexOf('"' + pkg + '"') === -1) continue;
+            var shim = STDLIB_SHIMS[pkg];
+            // Remove the import line
+            shimmed = shimmed.replace(new RegExp('\\s*"' + pkg.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '"\\n?'), '\n');
+            // Replace function calls
+            for (var original in shim.funcs) {
+                shimmed = shimmed.split(original).join(shim.funcs[original]);
+            }
+            appendCode += shim.code;
+        }
+        // Clean up empty import blocks: import (\n) → remove
+        shimmed = shimmed.replace(/import\s*\(\s*\n\s*\)/g, '');
+        // Clean up import with single remaining entry: import (\n\t"foo"\n) → import "foo"
+        shimmed = shimmed.replace(/import\s*\(\s*\n\t("[^"]+")\s*\n\)/g, 'import $1');
+        return shimmed + appendCode;
+    }
+
+    function doRun() {
+        if (!wasmReady) return;
+        var raw = outputEl() ? outputEl().value : '';
+        if (!raw) return;
+        var goSource = shimGoSource(raw);
+
+        var btn = runEl();
+        if (btn) { btn.disabled = true; btn.textContent = 'Running…'; }
+        var sec = outputSecEl();
+        var out = runOutputEl();
+        if (sec) sec.hidden = false;
+        if (out) { out.textContent = ''; out.className = 'playground-run-output'; }
+
+        fetch('/api/compile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'version=2&body=' + encodeURIComponent(goSource),
+        })
+        .then(function (resp) { return resp.json(); })
+        .then(function (data) {
+            if (out) {
+                if (data.Errors) {
+                    out.textContent = data.Errors;
+                    out.className = 'playground-run-output error';
+                } else {
+                    // Reconstruct output from Events (the go.dev compile API returns events)
+                    var text = '';
+                    if (data.Events) {
+                        for (var i = 0; i < data.Events.length; i++) {
+                            text += data.Events[i].Message;
+                        }
+                    }
+                    out.textContent = text || '(no output)';
+                    out.className = 'playground-run-output';
+                }
+            }
+        })
+        .catch(function (err) {
+            if (out) {
+                out.textContent = 'Failed to reach go.dev: ' + err.message;
+                out.className = 'playground-run-output error';
+            }
+        })
+        .finally(function () {
+            if (btn) { btn.disabled = false; btn.textContent = 'Run'; }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         const dialog  = document.getElementById('playground-dialog');
         const input   = inputEl();
@@ -107,6 +195,9 @@ func main()
         input.value = EXAMPLES.hello;
 
         input.addEventListener('input', scheduleTranspile);
+
+        var runBtn = runEl();
+        if (runBtn) runBtn.addEventListener('click', doRun);
 
         example.addEventListener('change', function () {
             const src = EXAMPLES[example.value];

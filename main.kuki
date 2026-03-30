@@ -6,6 +6,7 @@
 import "stdlib/html"
 import "stdlib/http" as httphelper
 import "stdlib/env"
+import "io"
 import "net/http"
 import "os"
 import "strings"
@@ -58,6 +59,21 @@ func main()
     # HTMX partial: loads syntax-highlighted Stem Panic source on expand
     mux.HandleFunc("GET /source", (w http.ResponseWriter, r reference http.Request) =>
         html.WriteTo(w, SourceCode(stemPanicSource)) onerr discard
+    )
+
+    # Proxy to Go playground — avoids CORS issues with go.dev/_/compile
+    mux.HandleFunc("POST /api/compile", (w http.ResponseWriter, r reference http.Request) =>
+        body, readErr := io.ReadAll(r.Body)
+        if readErr isnt empty
+            http.Error(w, "bad request", 400)
+            return
+        resp, postErr := http.Post("https://go.dev/_/compile", "application/x-www-form-urlencoded", strings.NewReader(body as string))
+        if postErr isnt empty
+            http.Error(w, "upstream error", 502)
+            return
+        defer resp.Body.Close()
+        w.Header().Set("Content-Type", "application/json")
+        io.Copy(w, resp.Body)
     )
 
     # WASM files — served with Brotli encoding when the client supports it
