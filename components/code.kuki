@@ -35,7 +35,7 @@ func SourceReveal() html.Fragment
                      hx-trigger="toggle[this.open] once"
                      hx-target="#source-code"
                      hx-swap="innerHTML">
-                <summary>View the Stem Panic source &mdash; 810 lines. Kukicha game stdlib wraps <a href="https://ebitengine.org/">Ebitengine</a>, a Go game engine.</summary>
+                <summary>View the Stem Panic source. Kukicha game stdlib wraps <a href="https://ebitengine.org/">Ebitengine</a>, a Go game engine.</summary>
                 <div id="source-code">
                     <p>Loading source&hellip;</p>
                 </div>
