@@ -4,7 +4,7 @@
 .hero-cta { display: flex; gap: 1rem; justify-content: center; align-items: center; flex-wrap: wrap; margin: 2rem 0; }
 .hero canvas { border: 2px solid var(--color-border); border-radius: 4px; }
 .source-reveal { text-align: center; padding: 1rem 0 2rem; }
-.source-reveal summary { cursor: pointer; font-weight: bold; font-size: 1.1rem; }
+.source-reveal summary { cursor: pointer; font-weight: bold; font-size: 1.1rem; display: list-item; }
 .source-reveal pre { text-align: left; padding: 1rem; overflow-x: auto; font-size: 0.8rem; max-height: 60vh; overflow-y: auto; }
 .source-reveal .meta { color: var(--color-text-secondary); margin-top: 0.5rem; }
 .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; padding: 2rem 0; }

@@ -23,12 +23,11 @@ func serveWasm(path string, w http.ResponseWriter, r reference http.Request)
     w.Header().Set("Content-Type", "application/wasm")
     w.Header().Set("Cache-Control", "public, max-age=3600")
     if strings.Contains(r.Header.Get("Accept-Encoding"), "br")
-        data, readErr := os.ReadFile(path + ".br")
-        if readErr isnt empty
+        data := os.ReadFile(path + ".br") onerr
             http.ServeFile(w, r, path)
             return
         w.Header().Set("Content-Encoding", "br")
-        w.Write(data)
+        _ = w.Write(data) onerr discard
         return
     http.ServeFile(w, r, path)
 
@@ -63,17 +62,16 @@ func main()
 
     # Proxy to Go playground — avoids CORS issues with go.dev/_/compile
     mux.HandleFunc("POST /api/compile", (w http.ResponseWriter, r reference http.Request) =>
-        body, readErr := io.ReadAll(r.Body)
-        if readErr isnt empty
+        body := io.ReadAll(r.Body) onerr
             http.Error(w, "bad request", 400)
             return
-        resp, postErr := http.Post("https://go.dev/_/compile", "application/x-www-form-urlencoded", strings.NewReader(body as string))
-        if postErr isnt empty
+        reader := strings.NewReader(body as string)
+        resp := http.Post("https://go.dev/_/compile", "application/x-www-form-urlencoded", reader) onerr
             http.Error(w, "upstream error", 502)
             return
         defer resp.Body.Close()
         w.Header().Set("Content-Type", "application/json")
-        io.Copy(w, resp.Body)
+        io.Copy(w, resp.Body) onerr discard
     )
 
     # WASM files — served with Brotli encoding when the client supports it
