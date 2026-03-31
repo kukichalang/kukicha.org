@@ -6,13 +6,13 @@ func Hero() html.Fragment
     return html.Render('
         <section class="hero">
             <p><a class="badge success" href="https://github.com/kukichalang/kukicha/releases/latest" title="See what&#39;s new in v0.0.29">v0.0.29 &mdash; latest release &nearr;</a></p>
-            <h1>A programming language you can read — that compiles to Go.</h1>
+            <h1>A Programming Language You Can Read (That Compiles to Go)</h1>
             <p class="hero-badges">
                 <span class="badge">Compiles to Go</span>
                 <span class="badge">Single binary</span>
                 <span class="badge">WASM ready</span>
             </p>
-            <p class="subtitle">Don&#39;t take our word for it. Stem Panic is a game written in Kukicha, running live as WASM right here.</p>
+            <p class="subtitle">Don&#39;t take our word for it (mine and Claude's). Stem Panic is a game written in Kukicha, running live as WASM right here.</p>
             <div class="hero-cta">
                 <div class="wasm-container"
                      id="wasm-container"
