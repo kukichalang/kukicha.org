@@ -12,7 +12,7 @@ func Hero() html.Fragment
                 <span class="badge">Single binary</span>
                 <span class="badge">WASM ready</span>
             </p>
-            <p class="subtitle">Don&#39;t take our word for it (mine and Claude's). Stem Panic is a game written in Kukicha, running live as WASM right here.</p>
+            <p class="subtitle">Don&#39;t take our word for it (mine and Claude&#39;s). Stem Panic is a game written in Kukicha, running live as WASM right here.</p>
             <div class="hero-cta">
                 <div class="wasm-container"
                      id="wasm-container"
