@@ -21,9 +21,9 @@ func Tutorials() html.Fragment
                 </div>
                 <div role="tabpanel">
                     <ul>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/absolute-beginner-tutorial.md">Absolute beginner</a> &mdash; first program</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/CLAUDE.md#kukicha-syntax-quick-reference">Quick reference</a> &mdash; Go/Python translation table</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/stdlib/CLAUDE.md">Stdlib reference</a> &mdash; 41+ packages</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/beginner-tutorial.md">Absolute beginner</a> &mdash; first program</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/kukicha-quick-reference.md">Quick reference</a> &mdash; Go/Python translation table</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/.claude/skills/stdlib/SKILL.md">Stdlib reference</a> &mdash; 41+ packages</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/production-patterns-tutorial.md">Production patterns</a> &mdash; databases, auth, retry</li>
                     </ul>
                 </div>
