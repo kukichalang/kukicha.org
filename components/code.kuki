@@ -6,7 +6,7 @@ import "os"
 
 func CodeCompare() html.Fragment
     return html.Render('
-        <h2 style="text-align: center">Go vs Kukicha <span class="badge secondary">less noise</span></h2>
+        <h2 style="text-align: center">What Kukicha Adds <span class="badge secondary">on top of Go</span></h2>
         <div class="code-compare">
             <div>
                 <h4>Go</h4>
@@ -17,13 +17,23 @@ func CodeCompare() html.Fragment
         result, err := parse(data)
         if err != nil \{
             return fmt.Errorf("parse: %w", err)
+        \}
+
+        label := ""
+        if count == 1 \{
+            label = "item"
+        \} else \{
+            label = "items"
         \}</code></pre>
             </div>
             <div>
                 <h4>Kukicha</h4>
                 <pre><code>result := fetchData()
             |> parse()
-            onerr return explain "pipeline failed"</code></pre>
+            onerr return explain "pipeline failed"
+
+        label := if count == 1 then "item" else "items"</code></pre>
+                <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--color-text-light);">Both Go and Kukicha syntax compile &mdash; Kukicha is a strict superset. Use whichever you prefer.</p>
             </div>
         </div>
     ')
@@ -53,4 +63,3 @@ func SourceCode(path string) html.Fragment
         return html.Render('<pre><code>Source not available.</code></pre>')
     content := cast.SmartString(raw) onerr ""
     return html.Render('<pre><code>{html.Escape(content)}</code></pre>')
-

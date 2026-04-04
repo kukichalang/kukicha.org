@@ -14,18 +14,36 @@ func HomePage() html.Fragment
 
     features := CardGrid(list of Feature{
         Feature{
-            title: "Read what AI writes",
-            body: "Kukicha is designed for humans to review AI-generated code. English keywords, fewer symbols, 1:1 mapping to Go and Python concepts.",
-            href: "https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/agent-workflow-tutorial.md",
+            title: "Rename .go to .kuki. It compiles.",
+            body: "Kukicha is a strict superset of Go. Your existing code works unchanged — no rewriting, no new build system, no learning curve to start.",
+            href: "https://github.com/kukichalang/kukicha/blob/main/docs/kukicha-quick-reference.md",
         },
         Feature{
-            title: "Catch AI mistakes at compile time",
+            title: "Blend in new features gradually",
+            body: "Pipes, onerr, enums, if-expressions, readable operators. Adopt one feature at a time — leave the rest as Go. kukicha-blend shows you what's possible.",
+            href: "https://github.com/kukichalang/kukicha/blob/main/docs/faq.md#coming-from-go",
+        },
+        Feature{
+            title: "Brew it back to Go anytime",
+            body: "kukicha brew converts your .kuki files to standalone, idiomatic Go. Zero lock-in — the stems dissolve, the tea remains.",
+            href: "https://github.com/kukichalang/kukicha/blob/main/docs/TRANSPILER-TODO.md#2-kukicha-brew-kukicha---go-",
+        },
+    })
+
+    security := CardGrid(list of Feature{
+        Feature{
+            title: "Security at compile time",
             body: "The compiler flags SQL injection, XSS, SSRF, path traversal, command injection, and open redirects before your code ships.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/production-patterns-tutorial.md",
         },
         Feature{
+            title: "42+ stdlib packages",
+            body: "fetch, slice, sort, mcp, llm, html, crypto, shell — batteries included for CLI tools, web apps, AI agents, and games.",
+            href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md",
+        },
+        Feature{
             title: "Ship anywhere Go runs",
-            body: "Single binary. No runtime. WASM for the browser. Goroutines for concurrency.",
+            body: "Single binary. No runtime. WASM for the browser. Goroutines for concurrency. The full Go ecosystem at your fingertips.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/cli-explorer-tutorial.md",
         },
     })
@@ -34,4 +52,4 @@ func HomePage() html.Fragment
     code := CodeCompare()
     tutorials := Tutorials()
     footer := Footer()
-    return html.Join(nav, hero, source, features, code, tutorials, footer)
+    return html.Join(nav, hero, source, features, code, security, tutorials, footer)

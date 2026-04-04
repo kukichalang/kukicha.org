@@ -8,8 +8,17 @@ func Tutorials() html.Fragment
             <h2>Start here</h2>
             <ot-tabs>
                 <div role="tablist">
+                    <button role="tab">I know Go</button>
                     <button role="tab">I want to make something</button>
-                    <button role="tab">I want to understand the language</button>
+                    <button role="tab">I&#39;m new to programming</button>
+                </div>
+                <div role="tabpanel">
+                    <ul>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/kukicha-quick-reference.md">Quick reference</a> &mdash; Go-to-Kukicha translation table</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/faq.md#coming-from-go">FAQ for Go devs</a> &mdash; why bother, what changes</li>
+                        <li><code>kukicha-blend main.go</code> &mdash; see what your Go looks like with Kukicha idioms</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/production-patterns-tutorial.md">Production patterns</a> &mdash; databases, auth, retry</li>
+                    </ul>
                 </div>
                 <div role="tabpanel">
                     <ul>
@@ -22,9 +31,8 @@ func Tutorials() html.Fragment
                 <div role="tabpanel">
                     <ul>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/beginner-tutorial.md">Absolute beginner</a> &mdash; first program</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/kukicha-quick-reference.md">Quick reference</a> &mdash; Go/Python translation table</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/.claude/skills/stdlib/SKILL.md">Stdlib reference</a> &mdash; 41+ packages</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/production-patterns-tutorial.md">Production patterns</a> &mdash; databases, auth, retry</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/agent-workflow-tutorial.md">Agent workflow</a> &mdash; let AI write code, you review</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md">Stdlib reference</a> &mdash; 42+ packages</li>
                     </ul>
                 </div>
             </ot-tabs>
