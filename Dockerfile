@@ -3,7 +3,7 @@ FROM golang:1.26 AS builder
 WORKDIR /src
 
 # Install kukicha compiler and brotli
-RUN go install github.com/kukichalang/kukicha/cmd/kukicha@v0.0.31 && \
+RUN go install github.com/kukichalang/kukicha/cmd/kukicha@v0.1.0 && \
     apt-get update -qq && apt-get install -y --no-install-recommends brotli
 
 # Copy source
