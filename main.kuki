@@ -7,6 +7,7 @@ import "stdlib/html"
 import "stdlib/http" as httphelper
 import "stdlib/env"
 import "io"
+import "log"
 import "net/http"
 import "os"
 import "strings"
@@ -27,7 +28,8 @@ func serveWasm(path string, w http.ResponseWriter, r reference http.Request)
             http.ServeFile(w, r, path)
             return
         w.Header().Set("Content-Encoding", "br")
-        _ = w.Write(data) onerr discard
+        _ = w.Write(data) onerr
+            log.Println("write error: {error}")
         return
     http.ServeFile(w, r, path)
 
@@ -37,27 +39,32 @@ func main()
     # Full page: GET /
     mux.HandleFunc("GET /", (w http.ResponseWriter, r reference http.Request) =>
         page := Layout("Kukicha — a language you can read", HomePage())
-        html.WriteTo(w, page) onerr discard
+        html.WriteTo(w, page) onerr
+            log.Println("write error: {error}")
     )
 
     # HTMX partial: loads the WASM game player on click
     mux.HandleFunc("GET /wasm-player", (w http.ResponseWriter, r reference http.Request) =>
-        html.WriteTo(w, WasmPlayer()) onerr discard
+        html.WriteTo(w, WasmPlayer()) onerr
+            log.Println("write error: {error}")
     )
 
     # Standalone game page (loaded in iframe)
     mux.HandleFunc("GET /game", (w http.ResponseWriter, r reference http.Request) =>
-        html.WriteTo(w, GamePage()) onerr discard
+        html.WriteTo(w, GamePage()) onerr
+            log.Println("write error: {error}")
     )
 
     # HTMX partial: close button returns the play button
     mux.HandleFunc("GET /wasm-close", (w http.ResponseWriter, r reference http.Request) =>
-        html.WriteTo(w, WasmPlayButton()) onerr discard
+        html.WriteTo(w, WasmPlayButton()) onerr
+            log.Println("write error: {error}")
     )
 
     # HTMX partial: loads syntax-highlighted Stem Panic source on expand
     mux.HandleFunc("GET /source", (w http.ResponseWriter, r reference http.Request) =>
-        html.WriteTo(w, SourceCode(stemPanicSource)) onerr discard
+        html.WriteTo(w, SourceCode(stemPanicSource)) onerr
+            log.Println("write error: {error}")
     )
 
     # Proxy to Go playground — avoids CORS issues with go.dev/_/compile
@@ -71,7 +78,8 @@ func main()
             return
         defer resp.Body.Close()
         w.Header().Set("Content-Type", "application/json")
-        io.Copy(w, resp.Body) onerr discard
+        io.Copy(w, resp.Body) onerr
+            log.Println("copy error: {error}")
     )
 
     # WASM files — served with Brotli encoding when the client supports it

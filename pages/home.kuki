@@ -15,35 +15,35 @@ func HomePage() html.Fragment
     features := CardGrid(list of Feature{
         Feature{
             title: "Rename .go to .kuki. It compiles.",
-            body: "Kukicha is a strict superset of Go. Your existing code works unchanged — no rewriting, no new build system, no learning curve to start.",
+            body: "Kukicha is a strict superset of Go. Your existing code works without changes. No rewriting or new build systems required.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/kukicha-quick-reference.md",
         },
         Feature{
-            title: "Blend in new features gradually",
-            body: "Pipes, onerr, enums, if-expressions, readable operators. Adopt one feature at a time — leave the rest as Go. kukicha-blend shows you what's possible.",
+            title: "Adopt features gradually",
+            body: "Pipes, onerr, enums, if-expressions, and readable operators. Add these to your Go code one line at a time.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/faq.md#coming-from-go",
         },
         Feature{
-            title: "Brew it back to Go anytime",
-            body: "kukicha brew converts your .kuki files to standalone, idiomatic Go. Zero lock-in — the stems dissolve, the tea remains.",
+            title: "Convert back to Go anytime",
+            body: "The kukicha brew command converts your .kuki files into standalone, idiomatic Go. There is no vendor lock-in.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/TRANSPILER-TODO.md#2-kukicha-brew-kukicha---go-",
         },
     })
 
     security := CardGrid(list of Feature{
         Feature{
-            title: "Security at compile time",
-            body: "The compiler flags SQL injection, XSS, SSRF, path traversal, command injection, and open redirects before your code ships.",
+            title: "Compile-time security",
+            body: "The compiler detects SQL injection, XSS, SSRF, path traversal, and command injection before your code runs.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/production-patterns-tutorial.md",
         },
         Feature{
             title: "42+ stdlib packages",
-            body: "fetch, slice, sort, mcp, llm, html, crypto, shell — batteries included for CLI tools, web apps, AI agents, and games.",
+            body: "Includes support for fetch, slice, sort, MCP, LLM, HTML, and shell commands. Built for CLI tools and AI agents.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md",
         },
         Feature{
-            title: "Ship anywhere Go runs",
-            body: "Single binary. No runtime. WASM for the browser. Goroutines for concurrency. The full Go ecosystem at your fingertips.",
+            title: "Native Go performance",
+            body: "Compiles to a single binary with no runtime overhead. Built-in WASM support and Go's concurrency model.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/cli-explorer-tutorial.md",
         },
     })

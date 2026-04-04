@@ -14,25 +14,25 @@ func Tutorials() html.Fragment
                 </div>
                 <div role="tabpanel">
                     <ul>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/kukicha-quick-reference.md">Quick reference</a> &mdash; Go-to-Kukicha translation table</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/faq.md#coming-from-go">FAQ for Go devs</a> &mdash; why bother, what changes</li>
-                        <li><code>kukicha-blend main.go</code> &mdash; see what your Go looks like with Kukicha idioms</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/production-patterns-tutorial.md">Production patterns</a> &mdash; databases, auth, retry</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/kukicha-quick-reference.md">Quick Reference</a>: Go-to-Kukicha translation table</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/faq.md#coming-from-go">FAQ for Go Devs</a>: Why use Kukicha and what changes</li>
+                        <li><code>kukicha-blend main.go</code>: See your Go code with Kukicha idioms</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/production-patterns-tutorial.md">Production Patterns</a>: Databases, auth, and retry logic</li>
                     </ul>
                 </div>
                 <div role="tabpanel">
                     <ul>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/game/01-hello-world.md">Game tutorials</a> &mdash; 8 lessons to Breakout</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/cli-explorer-tutorial.md">CLI tool</a> &mdash; types, methods, API data</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/web-app-tutorial.md">Web app</a> &mdash; HTTP servers, REST APIs</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/agent-workflow-tutorial.md">AI agent tools</a> &mdash; MCP servers</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/game/01-hello-world.md">Game Tutorials</a>: Eight lessons to build Breakout</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/cli-explorer-tutorial.md">CLI Tool</a>: Types, methods, and API data</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/web-app-tutorial.md">Web App</a>: HTTP servers and REST APIs</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/agent-workflow-tutorial.md">AI Agent Tools</a>: Building MCP servers</li>
                     </ul>
                 </div>
                 <div role="tabpanel">
                     <ul>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/beginner-tutorial.md">Absolute beginner</a> &mdash; first program</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/agent-workflow-tutorial.md">Agent workflow</a> &mdash; let AI write code, you review</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md">Stdlib reference</a> &mdash; 42+ packages</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/beginner-tutorial.md">First Program</a>: No prior experience required</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/agent-workflow-tutorial.md">Agent Workflow</a>: Let AI write code while you review</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md">Stdlib Reference</a>: 42+ pre-built packages</li>
                     </ul>
                 </div>
             </ot-tabs>
