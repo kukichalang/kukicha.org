@@ -20,7 +20,7 @@ RUN brotli -9 --keep static/wasm/kukicha.wasm static/wasm/stem-panic.wasm
 FROM golang:1.26 AS warmup
 RUN go install github.com/kukichalang/kukicha/cmd/kukicha@v0.1.0
 RUN mkdir /warm && cd /warm && \
-    printf 'import "stdlib/slice"\nimport "stdlib/fetch"\nimport "stdlib/json"\n\nfunc main()\n    print("warm")\n' > warm.kuki && \
+    printf 'import "stdlib/slice"\nimport "stdlib/json"\nimport "time"\n\nfunc main()\n    nums := list of int{1, 2, 3}\n    evens := nums |> slice.Filter(n => n > 1)\n    out := json.Marshal(evens) onerr panic "{error}"\n    _ = time.Now()\n    print(out as string)\n' > warm.kuki && \
     kukicha run warm.kuki && \
     rm -rf /warm
 
@@ -30,15 +30,16 @@ FROM golang:1.26-bookworm
 RUN go install github.com/kukichalang/kukicha/cmd/kukicha@v0.1.0
 
 # Copy pre-warmed Go module and build caches from warmup stage
-COPY --from=warmup /root/go/pkg/mod /root/go/pkg/mod
+COPY --from=warmup /go/pkg/mod /go/pkg/mod
 COPY --from=warmup /root/.cache/go-build /root/.cache/go-build
 
 # Copy website binary and static assets from builder
-COPY --from=builder /src/kukicha.org /kukicha.org
-COPY --from=builder /src/static /static
+COPY --from=builder /src/kukicha.org /app/kukicha.org
+COPY --from=builder /src/static /app/static
+WORKDIR /app
 
 # Disable module proxy — all deps must come from the pre-warmed cache
 ENV GOPROXY=off
 
 EXPOSE 8080
-ENTRYPOINT ["/kukicha.org"]
+ENTRYPOINT ["/app/kukicha.org"]

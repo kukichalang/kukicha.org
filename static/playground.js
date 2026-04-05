@@ -26,9 +26,9 @@ func main()
         print("Caught: {e}")`,
 
         enums: `enum Color
-    Red
-    Green
-    Blue
+    Red = 0
+    Green = 1
+    Blue = 2
 
 enum Planet
     Mercury = 1
@@ -41,7 +41,7 @@ func main()
         print("Go!")
 
     p := Planet.Earth
-    print("Earth is planet #{p}")`,
+    print("Earth is planet {p}")`,
 
         ifexpr: `func main()
     score := 85
@@ -49,10 +49,7 @@ func main()
     print("Score: {score}, Grade: {grade}")
 
     for i from 1 to 16
-        line := if i % 15 == 0 then "FizzBuzz"
-            else if i % 3 == 0 then "Fizz"
-            else if i % 5 == 0 then "Buzz"
-            else "{i}"
+        line := if i % 15 == 0 then "FizzBuzz" else if i % 3 == 0 then "Fizz" else if i % 5 == 0 then "Buzz" else "{i}"
         print(line)`,
 
         typeswitch: `interface Shape
@@ -129,20 +126,70 @@ func main()
     print("x={x} in range and not 15: {ok}")`,
     };
 
-    let wasmReady = false;
-    let wasmLoading = false;
-    let debounceTimer = null;
+    var currentTab = 'run';
+    var wasmReady = false;
+    var wasmLoading = false;
+    var debounceTimer = null;
 
-    function statusEl() { return document.getElementById('playground-status'); }
-    function inputEl()  { return document.getElementById('playground-input'); }
-    function outputEl() { return document.getElementById('playground-output'); }
-    function errorsEl() { return document.getElementById('playground-errors'); }
+    // Shared source — kept in sync between the two textarea pairs
+    var sharedSource = EXAMPLES.hello;
+
+    function $(id) { return document.getElementById(id); }
 
     function setStatus(msg, cls) {
-        const el = statusEl();
+        var el = $('playground-status');
         if (!el) return;
         el.textContent = msg;
         el.className = 'playground-status' + (cls ? ' ' + cls : '');
+    }
+
+    function activeInput() {
+        return currentTab === 'run' ? $('playground-input') : $('playground-transpile-input');
+    }
+
+    // Tab switching
+    function switchTab(tab) {
+        if (tab === currentTab) return;
+
+        // Save source from current tab
+        var cur = activeInput();
+        if (cur) sharedSource = cur.value;
+
+        currentTab = tab;
+
+        // Toggle visibility
+        var runMode = $('playground-run-mode');
+        var transpileMode = $('playground-transpile-mode');
+        var runBtn = $('playground-run');
+        var footerRun = $('playground-footer-run');
+        var footerTranspile = $('playground-footer-transpile');
+
+        if (tab === 'run') {
+            if (runMode) runMode.hidden = false;
+            if (transpileMode) transpileMode.hidden = true;
+            if (runBtn) runBtn.style.display = '';
+            if (footerRun) footerRun.hidden = false;
+            if (footerTranspile) footerTranspile.hidden = true;
+        } else {
+            if (runMode) runMode.hidden = true;
+            if (transpileMode) transpileMode.hidden = false;
+            if (runBtn) runBtn.style.display = 'none';
+            if (footerRun) footerRun.hidden = true;
+            if (footerTranspile) footerTranspile.hidden = false;
+            loadWasm();
+        }
+
+        // Restore source into new tab's textarea
+        var next = activeInput();
+        if (next) next.value = sharedSource;
+
+        // Update tab button styles
+        var tabs = document.querySelectorAll('.playground-tab');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab') === tab);
+        }
+
+        if (tab === 'transpile') doTranspile();
     }
 
     function loadWasm() {
@@ -150,21 +197,18 @@ func main()
         wasmLoading = true;
         setStatus('Loading compiler…', 'loading');
 
-        const go = new Go();
+        var go = new Go();
         WebAssembly.instantiateStreaming(
             fetch('/static/wasm/kukicha.wasm'),
             go.importObject
         ).then(function (result) {
             go.run(result.instance);
-            // Poll until kukichaTranspile is registered by the WASM module.
-            const poll = setInterval(function () {
+            var poll = setInterval(function () {
                 if (typeof window.kukichaTranspile === 'function') {
                     clearInterval(poll);
                     wasmReady = true;
                     wasmLoading = false;
                     setStatus('', '');
-                    var btn = runEl();
-                    if (btn) btn.disabled = false;
                     doTranspile();
                 }
             }, 50);
@@ -177,10 +221,11 @@ func main()
 
     function doTranspile() {
         if (!wasmReady) return;
-        const source = inputEl() ? inputEl().value : '';
-        const result = window.kukichaTranspile(source);
-        const out = outputEl();
-        const errs = errorsEl();
+        var input = $('playground-transpile-input');
+        var source = input ? input.value : '';
+        var result = window.kukichaTranspile(source);
+        var out = $('playground-output');
+        var errs = $('playground-transpile-errors');
         if (result.errors && result.errors.length > 0) {
             if (out) out.value = '';
             if (errs) {
@@ -200,10 +245,6 @@ func main()
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(doTranspile, 300);
     }
-
-    function runEl()       { return document.getElementById('playground-run'); }
-    function outputSecEl() { return document.getElementById('playground-output-section'); }
-    function runOutputEl() { return document.getElementById('playground-run-output'); }
 
     var ALLOWED_IMPORTS = [
         'stdlib/slice', 'stdlib/sort', 'stdlib/maps', 'stdlib/string',
@@ -230,14 +271,13 @@ func main()
     }
 
     function doRun() {
-        var source = inputEl() ? inputEl().value : '';
+        var input = $('playground-input');
+        var source = input ? input.value : '';
         if (!source.trim()) return;
 
-        var btn = runEl();
+        var btn = $('playground-run');
         if (btn) { btn.disabled = true; btn.textContent = 'Compiling…'; }
-        var sec = outputSecEl();
-        var out = runOutputEl();
-        if (sec) sec.hidden = false;
+        var out = $('playground-run-output');
         if (out) { out.textContent = ''; out.className = 'playground-run-output'; }
 
         fetch('/api/run', {
@@ -267,8 +307,7 @@ func main()
                     out.className = 'playground-run-output';
                 }
                 if (data.DurationMs !== undefined) {
-                    var statusText = 'Completed in ' + data.DurationMs + 'ms';
-                    setStatus(statusText, '');
+                    setStatus('Completed in ' + data.DurationMs + 'ms', '');
                 }
             }
         })
@@ -284,31 +323,56 @@ func main()
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        const dialog  = document.getElementById('playground-dialog');
-        const input   = inputEl();
-        const example = document.getElementById('playground-example');
+        var dialog  = document.getElementById('playground-dialog');
+        var input   = $('playground-input');
+        var transpileInput = $('playground-transpile-input');
+        var example = document.getElementById('playground-example');
 
         if (!dialog || !input) return;
 
-        // Pre-load the default example.
+        // Pre-load the default example
         input.value = EXAMPLES.hello;
+        if (transpileInput) transpileInput.value = EXAMPLES.hello;
 
-        input.addEventListener('input', scheduleTranspile);
+        // Sync shared source on input in either textarea
+        input.addEventListener('input', function () {
+            sharedSource = input.value;
+        });
+        if (transpileInput) {
+            transpileInput.addEventListener('input', function () {
+                sharedSource = transpileInput.value;
+                scheduleTranspile();
+            });
+        }
 
-        var runBtn = runEl();
+        // Run button
+        var runBtn = $('playground-run');
         if (runBtn) runBtn.addEventListener('click', doRun);
 
+        // Tab buttons
+        var tabs = document.querySelectorAll('.playground-tab');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].addEventListener('click', function () {
+                switchTab(this.getAttribute('data-tab'));
+            });
+        }
+
+        // Example dropdown — update both textareas
         example.addEventListener('change', function () {
-            const src = EXAMPLES[example.value];
+            var src = EXAMPLES[example.value];
             if (src !== undefined) {
+                sharedSource = src;
                 input.value = src;
-                doTranspile();
+                if (transpileInput) transpileInput.value = src;
+                if (currentTab === 'transpile') doTranspile();
             }
         });
 
-        // Lazy-load the WASM the first time the dialog opens.
+        // Lazy-load WASM when dialog opens (for transpile tab)
         dialog.addEventListener('toggle', function (e) {
-            if (e.newState === 'open') loadWasm();
+            if (e.newState === 'open') {
+                // Don't load WASM eagerly — only when transpile tab is selected
+            }
         });
     });
 }());

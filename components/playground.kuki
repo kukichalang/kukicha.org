@@ -11,7 +11,11 @@ func PlaygroundDialog() html.Fragment
         <dialog id="playground-dialog" closedby="any">
             <div class="playground-shell">
                 <div class="playground-header">
-                    <strong>Playground</strong> &mdash; Kukicha &rarr; Go
+                    <strong>Playground</strong>
+                    <div class="playground-tabs">
+                        <button class="playground-tab active" data-tab="run">Run</button>
+                        <button class="playground-tab" data-tab="transpile">Transpile</button>
+                    </div>
                     <span id="playground-status" class="playground-status"></span>
                     <form method="dialog" style="display:inline;margin:0;margin-left:auto">
                         <button value="close" class="playground-close" aria-label="Close">&times;</button>
@@ -31,14 +35,28 @@ func PlaygroundDialog() html.Fragment
                     </select>
                     <button id="playground-run" class="playground-run">Run</button>
                 </div>
-                <div class="playground-panes">
-                    <div class="playground-pane">
+                <div id="playground-run-mode" class="playground-run-mode">
+                    <div class="playground-pane playground-pane-full">
                         <div class="playground-pane-label">Kukicha</div>
                         <textarea id="playground-input"
                                   spellcheck="false"
                                   autocorrect="off"
                                   autocapitalize="off"></textarea>
                         <div id="playground-errors" class="playground-errors" hidden></div>
+                    </div>
+                    <div id="playground-output-section" class="playground-output-section">
+                        <div class="playground-pane-label">Output</div>
+                        <pre id="playground-run-output" class="playground-run-output">Click <strong>Run</strong> to compile and execute your code.</pre>
+                    </div>
+                </div>
+                <div id="playground-transpile-mode" class="playground-panes" hidden>
+                    <div class="playground-pane">
+                        <div class="playground-pane-label">Kukicha</div>
+                        <textarea id="playground-transpile-input"
+                                  spellcheck="false"
+                                  autocorrect="off"
+                                  autocapitalize="off"></textarea>
+                        <div id="playground-transpile-errors" class="playground-errors" hidden></div>
                     </div>
                     <div class="playground-pane">
                         <div class="playground-pane-label">Generated Go</div>
@@ -52,12 +70,9 @@ func PlaygroundDialog() html.Fragment
                         </div>
                     </div>
                 </div>
-                <div id="playground-output-section" class="playground-output-section" hidden>
-                    <div class="playground-pane-label">Output</div>
-                    <pre id="playground-run-output" class="playground-run-output"></pre>
-                </div>
                 <div class="playground-footer">
-                    Compiled and executed server-side with <code>kukicha run</code>
+                    <span id="playground-footer-run">Compiled and executed server-side with <code>kukicha run</code></span>
+                    <span id="playground-footer-transpile" hidden>Transpiled in-browser via WebAssembly</span>
                 </div>
             </div>
         </dialog>
