@@ -5,15 +5,259 @@
 
 import "stdlib/html"
 import "stdlib/http" as httphelper
+import "stdlib/json"
 import "stdlib/env"
+import "bytes"
+import "context"
 import "io"
 import "log"
 import "net/http"
 import "os"
+import "os/exec"
+import "path/filepath"
 import "strings"
+import "sync"
+import "time"
 
 # Path to the Stem Panic source (bundled in repo for source reveal)
 var stemPanicSource string = "static/stem-panic-source.txt"
+
+# Playground configuration
+var maxSourceSize int = 65536
+var maxOutputSize int = 1048576
+var execTimeout time.Duration = 10 * time.Second
+var maxConcurrent int = 5
+
+# Concurrency semaphore for playground executions
+var execSem channel of bool = make(channel of bool, 5)
+
+# Rate limiter: per-IP token bucket
+var rateMu sync.Mutex
+var rateMap map of string to rateBucket = make(map of string to rateBucket)
+
+type rateBucket
+    tokens int
+    lastRefill time.Time
+
+# allowedStdlib are the kukicha stdlib packages playground code may import.
+# Everything else is rejected. This is the Go playground approach — allowlist, not blocklist.
+var allowedStdlib map of string to bool = map of string to bool{
+    "stdlib/slice": true,
+    "stdlib/sort": true,
+    "stdlib/maps": true,
+    "stdlib/string": true,
+    "stdlib/cast": true,
+    "stdlib/parse": true,
+    "stdlib/json": true,
+    "stdlib/encoding": true,
+    "stdlib/regex": true,
+    "stdlib/iterator": true,
+    "stdlib/container": true,
+    "stdlib/errors": true,
+    "stdlib/semver": true,
+    "stdlib/validate": true,
+    "stdlib/concurrent": true,
+    "stdlib/ctx": true,
+    "stdlib/datetime": true,
+    "stdlib/random": true,
+    "stdlib/table": true,
+    "stdlib/html": true,
+    "stdlib/retry": true,
+    "stdlib/must": true,
+    "stdlib/crypto": true,
+    "stdlib/template": true,
+}
+
+# allowedGoStdlib are the Go standard library packages playground code may import.
+var allowedGoStdlib map of string to bool = map of string to bool{
+    "fmt": true,
+    "math": true,
+    "math/rand": true,
+    "math/big": true,
+    "strings": true,
+    "strconv": true,
+    "sort": true,
+    "slices": true,
+    "maps": true,
+    "cmp": true,
+    "unicode": true,
+    "unicode/utf8": true,
+    "encoding/json": true,
+    "encoding/xml": true,
+    "encoding/csv": true,
+    "encoding/base64": true,
+    "encoding/hex": true,
+    "bytes": true,
+    "bufio": true,
+    "io": true,
+    "regexp": true,
+    "errors": true,
+    "log": true,
+    "time": true,
+    "context": true,
+    "sync": true,
+    "sync/atomic": true,
+}
+
+type runRequest
+    Source string
+
+type runResponse
+    Output string
+    Errors string
+    DurationMs int64
+
+# clientIP extracts the caller's IP from X-Forwarded-For (Cloud Run sets this)
+# or falls back to RemoteAddr.
+func clientIP(r reference http.Request) string
+    if xff := r.Header.Get("X-Forwarded-For"); xff isnt ""
+        parts := strings.Split(xff, ",")
+        return strings.TrimSpace(parts[0])
+    return r.RemoteAddr
+
+# checkRate returns true if the request is allowed. Uses a simple token bucket:
+# 10 tokens max, refill 1 token per 6 seconds (≈10/min).
+func checkRate(ip string) bool
+    rateMu.Lock()
+    defer rateMu.Unlock()
+    bucket, ok := rateMap[ip]
+    now := time.Now()
+    if not ok
+        rateMap[ip] = rateBucket{tokens: 9, lastRefill: now}
+        return true
+    elapsed := now.Sub(bucket.lastRefill)
+    refill := (elapsed.Seconds() / 6) as int
+    if refill > 0
+        bucket.tokens = bucket.tokens + refill
+        if bucket.tokens > 10
+            bucket.tokens = 10
+        bucket.lastRefill = now
+    if bucket.tokens <= 0
+        rateMap[ip] = bucket
+        return false
+    bucket.tokens = bucket.tokens - 1
+    rateMap[ip] = bucket
+    return true
+
+# scanImports extracts all quoted import paths from the source and returns
+# the first one that isn't in the allowlists. Returns "" if all are allowed.
+# This is a string-level scan before compilation — not a full parser.
+func scanImports(source string) string
+    # Find all import "..." patterns in the source
+    lines := strings.Split(source, "\n")
+    for line in lines
+        trimmed := strings.TrimSpace(line)
+        if not strings.HasPrefix(trimmed, "import ")
+            continue
+        # Extract the quoted path: import "path" or import "path" as alias
+        rest := strings.TrimPrefix(trimmed, "import ")
+        rest = strings.TrimSpace(rest)
+        if len(rest) == 0 or rest[0] != "\"" as byte
+            continue
+        # Find closing quote
+        end := strings.Index(rest[1:], "\"")
+        if end < 0
+            continue
+        pkg := rest[1 : end+1]
+        # Check against allowlists
+        if strings.HasPrefix(pkg, "stdlib/")
+            if not allowedStdlib[pkg]
+                return pkg
+        else
+            if not allowedGoStdlib[pkg]
+                return pkg
+    return ""
+
+# handleRun is the POST /api/run handler. It validates the source, scans for
+# blocked imports, writes a temp .kuki file, runs kukicha with a timeout,
+# and returns JSON with the output or errors.
+func handleRun(w http.ResponseWriter, r reference http.Request)
+    ip := clientIP(r)
+    if not checkRate(ip)
+        http.Error(w, "rate limit exceeded", 429)
+        return
+
+    # Enforce concurrency limit
+    select
+        when send true to execSem
+            defer func()
+                receive from execSem
+            ()
+        otherwise
+            http.Error(w, "server busy, try again shortly", 503)
+            return
+
+    # Read and validate body
+    limited := io.LimitReader(r.Body, (maxSourceSize + 1) as int64)
+    body := io.ReadAll(limited) onerr
+        http.Error(w, "bad request", 400)
+        return
+    if len(body) > maxSourceSize
+        http.Error(w, "source too large (64 KB max)", 413)
+        return
+
+    req := runRequest{}
+    json.UnmarshalString(body as string, reference of req) onerr
+        http.Error(w, "invalid JSON", 400)
+        return
+    if strings.TrimSpace(req.Source) == ""
+        http.Error(w, "empty source", 400)
+        return
+
+    # Scan imports against allowlist before compilation
+    if denied := scanImports(req.Source); denied isnt ""
+        resp := runResponse{Errors: "import \"{denied}\" is not allowed in the playground"}
+        w.Header().Set("Content-Type", "application/json")
+        json.MarshalWrite(w, resp) onerr
+            log.Println("write error: {error}")
+        return
+
+    # Write source to a temp .kuki file
+    tmpDir := os.MkdirTemp("", "playground-*") onerr
+        http.Error(w, "internal error", 500)
+        return
+    defer os.RemoveAll(tmpDir)
+    tmpFile := filepath.Join(tmpDir, "main.kuki")
+    os.WriteFile(tmpFile, req.Source as list of byte, 0o644) onerr
+        http.Error(w, "internal error", 500)
+        return
+
+    # Run kukicha with timeout
+    ctx, cancel := context.WithTimeout(context.Background(), execTimeout)
+    defer cancel()
+    cmd := exec.CommandContext(ctx, "kukicha", "run", tmpFile)
+    stdout := bytes.Buffer{}
+    stderr := bytes.Buffer{}
+    cmd.Stdout = reference of stdout
+    cmd.Stderr = reference of stderr
+    start := time.Now()
+    runErr := cmd.Run()
+    duration := time.Since(start).Milliseconds()
+
+    # Truncate output if needed
+    outStr := stdout.String()
+    if len(outStr) > maxOutputSize
+        outStr = outStr[:maxOutputSize] + "\n[output truncated]"
+    errStr := stderr.String()
+    if len(errStr) > maxOutputSize
+        errStr = errStr[:maxOutputSize] + "\n[output truncated]"
+
+    resp := runResponse{DurationMs: duration}
+    if runErr isnt empty
+        if ctx.Err() == context.DeadlineExceeded
+            resp.Errors = "execution timed out (10s limit)"
+        else if errStr isnt ""
+            resp.Errors = errStr
+        else
+            resp.Errors = runErr.Error()
+    else
+        resp.Output = outStr
+        if errStr isnt ""
+            resp.Errors = errStr
+
+    w.Header().Set("Content-Type", "application/json")
+    json.MarshalWrite(w, resp) onerr
+        log.Println("write error: {error}")
 
 # serveWasm serves a .wasm file with Brotli encoding when the client supports
 # it. The .wasm.br file must exist alongside the .wasm (generated at build time
@@ -67,19 +311,9 @@ func main()
             log.Println("write error: {error}")
     )
 
-    # Proxy to Go playground — avoids CORS issues with go.dev/_/compile
-    mux.HandleFunc("POST /api/compile", (w http.ResponseWriter, r reference http.Request) =>
-        body := io.ReadAll(r.Body) onerr
-            http.Error(w, "bad request", 400)
-            return
-        reader := strings.NewReader(body as string)
-        resp := http.Post("https://go.dev/_/compile", "application/x-www-form-urlencoded", reader) onerr
-            http.Error(w, "upstream error", 502)
-            return
-        defer resp.Body.Close()
-        w.Header().Set("Content-Type", "application/json")
-        io.Copy(w, resp.Body) onerr
-            log.Println("copy error: {error}")
+    # Playground: compile and run Kukicha code server-side
+    mux.HandleFunc("POST /api/run", (w http.ResponseWriter, r reference http.Request) =>
+        handleRun(w, r)
     )
 
     # WASM files — served with Brotli encoding when the client supports it

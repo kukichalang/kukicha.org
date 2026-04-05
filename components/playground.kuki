@@ -23,8 +23,13 @@ func PlaygroundDialog() html.Fragment
                         <option value="hello">Hello World</option>
                         <option value="pipes">Pipes &amp; filter</option>
                         <option value="onerr">Error handling</option>
+                        <option value="enums">Enums</option>
+                        <option value="ifexpr">If-expressions</option>
+                        <option value="typeswitch">Type switch</option>
+                        <option value="channels">Channels &amp; goroutines</option>
+                        <option value="operators">Readable operators</option>
                     </select>
-                    <button id="playground-run" class="playground-run" disabled>Run</button>
+                    <button id="playground-run" class="playground-run">Run</button>
                 </div>
                 <div class="playground-panes">
                     <div class="playground-pane">
@@ -52,7 +57,7 @@ func PlaygroundDialog() html.Fragment
                     <pre id="playground-run-output" class="playground-run-output"></pre>
                 </div>
                 <div class="playground-footer">
-                    Execution powered by <a href="https://go.dev" target="_blank" rel="noopener">go.dev</a>
+                    Compiled and executed server-side with <code>kukicha run</code>
                 </div>
             </div>
         </dialog>
