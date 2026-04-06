@@ -1,6 +1,48 @@
+/* ── Kukicha tea palette ── */
+:root {
+    --tea-leaf: #7a9e5a;
+    --tea-leaf-dim: #5c7a42;
+    --tea-leaf-bright: #95bf6e;
+    --twig-brown: #b8956a;
+    --twig-dark: #8a6d4a;
+    --twig-light: #d4b896;
+    --brew-gold: #c9a84c;
+    --brew-amber: #e0c47a;
+    --stem-green: #4a6e3a;
+}
+
+/* Override Oat CSS variables for kukicha theme */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-primary: var(--tea-leaf);
+        --color-primary-hover: var(--tea-leaf-bright);
+    }
+}
+@media (prefers-color-scheme: light) {
+    :root {
+        --color-primary: var(--tea-leaf-dim);
+        --color-primary-hover: var(--stem-green);
+    }
+}
+
+/* Inline code badges */
+code {
+    color: var(--brew-gold);
+}
+
+/* Global link color */
+a {
+    color: var(--tea-leaf-bright);
+}
+a:hover {
+    color: var(--brew-amber);
+}
+
+/* ── Hero ── */
 .hero {
     text-align: center;
     padding: 3rem 0 2rem;
+    position: relative;
 }
 .hero h1 {
     font-size: 2.2rem;
@@ -34,6 +76,55 @@
     border: 2px solid var(--color-border);
     border-radius: 4px;
 }
+
+/* Tea leaf gradient behind hero */
+.hero::before {
+    content: "";
+    position: absolute;
+    top: -2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 120%;
+    background: radial-gradient(ellipse at center, rgba(122, 158, 90, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+/* Twig-colored version badge */
+.hero .badge.success {
+    background: var(--twig-brown);
+    color: #1a1a1a;
+    border-color: var(--twig-brown);
+}
+
+/* Styled hero badges */
+.hero-badges .badge {
+    border-color: var(--tea-leaf-dim);
+    color: var(--tea-leaf-bright);
+}
+
+/* Primary button with tea-leaf green */
+.hero-cta [data-variant="primary"],
+.hero-cta .button.primary {
+    background: var(--tea-leaf);
+    border-color: var(--tea-leaf);
+    color: #1a1a1a;
+}
+.hero-cta [data-variant="primary"]:hover,
+.hero-cta .button.primary:hover {
+    background: var(--tea-leaf-bright);
+    border-color: var(--tea-leaf-bright);
+}
+
+/* Outline button with warm twig tone */
+.hero-cta .button.outline {
+    border-color: var(--twig-brown);
+    color: var(--twig-light);
+}
+.hero-cta .button.outline:hover {
+    background: var(--twig-brown);
+    color: #1a1a1a;
+}
 .source-reveal {
     text-align: center;
     padding: 1rem 0 2rem;
@@ -43,6 +134,13 @@
     font-weight: bold;
     font-size: 1.1rem;
     display: list-item;
+    color: var(--tea-leaf-bright);
+}
+.source-reveal summary:hover {
+    color: var(--brew-amber);
+}
+.source-reveal a {
+    color: var(--tea-leaf-bright);
 }
 .source-reveal pre {
     text-align: left;
@@ -65,6 +163,26 @@
 .card-grid article header h3 {
     margin-top: 0;
 }
+
+/* Tea-themed cards: green top accent */
+.card-grid article {
+    border-top: 3px solid var(--tea-leaf-dim);
+    transition: border-color 0.2s;
+}
+.card-grid article:hover {
+    border-top-color: var(--tea-leaf-bright);
+}
+.card-grid article h3 {
+    color: var(--tea-leaf-bright);
+}
+.card-grid article .button.outline {
+    border-color: var(--tea-leaf-dim);
+    color: var(--tea-leaf-bright);
+}
+.card-grid article .button.outline:hover {
+    background: var(--tea-leaf-dim);
+    color: #fff;
+}
 .code-compare {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -75,6 +193,17 @@
     padding: 1rem;
     overflow-x: auto;
     font-size: 0.85rem;
+    border-left: 3px solid var(--twig-dark);
+}
+/* Kukicha side gets a green accent */
+.code-compare > div:last-child pre {
+    border-left-color: var(--tea-leaf);
+}
+.code-compare h4 {
+    color: var(--twig-light);
+}
+.code-compare > div:last-child h4 {
+    color: var(--tea-leaf-bright);
 }
 .tutorials {
     padding: 2rem 0;
@@ -88,8 +217,24 @@
 }
 .tutorials li::before {
     content: "|> ";
-    color: var(--color-primary);
+    color: var(--brew-gold);
     font-weight: bold;
+}
+.tutorials h2 {
+    color: var(--twig-light);
+}
+.tutorials [role="tab"] {
+    transition: color 0.15s;
+}
+.tutorials [role="tab"][aria-selected="true"],
+.tutorials [role="tab"]:hover {
+    color: var(--tea-leaf-bright);
+}
+.tutorials a {
+    color: var(--tea-leaf-bright);
+}
+.tutorials a:hover {
+    color: var(--brew-amber);
 }
 button.nav-link {
     background: none;
@@ -103,13 +248,44 @@ button.nav-link {
     transition: background-color 0.15s;
 }
 button.nav-link:hover {
-    background-color: var(--accent, rgba(0, 0, 0, 0.06));
+    background-color: rgba(122, 158, 90, 0.12);
+    color: var(--tea-leaf-bright);
+}
+
+/* Navbar brand in tea green */
+nav[data-topnav] strong {
+    color: var(--tea-leaf-bright);
+}
+nav[data-topnav] a:hover {
+    color: var(--tea-leaf-bright);
 }
 footer {
     text-align: center;
     padding: 2rem 0;
     color: var(--color-text-secondary);
 }
+footer a {
+    color: var(--twig-light);
+}
+footer a:hover {
+    color: var(--brew-amber);
+}
+hr {
+    border-color: var(--tea-leaf-dim);
+    opacity: 0.3;
+}
+
+/* Section headings — warm accent */
+.code-compare + .card-grid article:nth-child(1) { border-top-color: var(--brew-gold); }
+.code-compare + .card-grid article:nth-child(2) { border-top-color: var(--tea-leaf); }
+.code-compare + .card-grid article:nth-child(3) { border-top-color: var(--twig-brown); }
+
+/* "What Kukicha Adds" heading */
+h2 .badge.secondary {
+    border-color: var(--twig-brown);
+    color: var(--twig-light);
+}
+
 /* Playground dialog */
 #playground-dialog {
     max-width: 92vw;
@@ -153,8 +329,8 @@ footer {
     border-right: none;
 }
 .playground-tab.active {
-    background: var(--color-primary, #2563eb);
-    color: #fff;
+    background: var(--tea-leaf);
+    color: #1a1a1a;
 }
 .playground-run-mode {
     display: flex;
