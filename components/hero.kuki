@@ -5,14 +5,14 @@ import "stdlib/html"
 func Hero() html.Fragment
     return html.Render('
         <section class="hero">
-            <p><a class="badge success" href="https://github.com/kukichalang/kukicha/releases/latest" title="See what&#39;s new in v0.1.10">v0.1.10 &mdash; latest release &nearr;</a></p>
-            <h1>Built on Go</h1>
+            <p><a class="badge success" href="https://github.com/kukichalang/kukicha/releases/latest" title="See what&#39;s new in v0.1.11">v0.1.11 &mdash; latest release &nearr;</a></p>
+            <h1>Brewed from Go</h1>
             <p class="hero-badges">
+                <span class="badge">Skim First</span>
                 <span class="badge">Strict Go Superset</span>
-                <span class="badge">No Lock-in</span>
                 <span class="badge">Single Binary</span>
             </p>
-            <p class="subtitle">Kukicha adds pipes, <code>onerr</code>, enums, and if-expressions to the Go ecosystem. Rename <code>.go</code> to <code>.kuki</code> and it compiles without changes. Adopt new features one line at a time.</p>
+            <p class="subtitle">A language you can skim. Readable Kukicha forms &mdash; <code>list of string</code>, <code>onerr return</code>, <code>and</code>/<code>or</code>/<code>not</code> &mdash; while you&#39;re learning. Plain Go &mdash; <code>[]string</code>, <code>!= nil</code>, <code>&amp;&amp;</code> &mdash; when you&#39;re fluent. Same file, same compiler. The stdlib stays skimmable either way.</p>
             <div class="hero-cta">
                 <div class="wasm-container"
                      id="wasm-container"
