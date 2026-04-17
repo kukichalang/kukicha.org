@@ -8,11 +8,10 @@ func Hero() html.Fragment
             <p><a class="badge success" href="https://github.com/kukichalang/kukicha/releases/latest" title="See what&#39;s new in v0.1.11">v0.1.11 &mdash; latest release &nearr;</a></p>
             <h1>Brewed from Go</h1>
             <p class="hero-badges">
-                <span class="badge">Skim First</span>
-                <span class="badge">Strict Go Superset</span>
+                <span class="badge">Readable</span>
                 <span class="badge">Single Binary</span>
             </p>
-            <p class="subtitle">A language you can skim. Readable Kukicha forms &mdash; <code>list of string</code>, <code>onerr return</code>, <code>and</code>/<code>or</code>/<code>not</code> &mdash; while you&#39;re learning. Plain Go &mdash; <code>[]string</code>, <code>!= nil</code>, <code>&amp;&amp;</code> &mdash; when you&#39;re fluent. Same file, same compiler. The stdlib stays skimmable either way.</p>
+            <p class="subtitle">Readable Kukicha forms &mdash; <code>list of string</code>, <code>onerr return</code>, <code>and</code>/<code>or</code>/<code>not</code> &mdash; while you&#39;re learning. Plain Go &mdash; <code>[]string</code>, <code>!= nil</code>, <code>&amp;&amp;</code> &mdash; when you&#39;re fluent. Same file, same compiler. Kukicha stdlib stays understandable.</p>
             <div class="hero-cta">
                 <div class="wasm-container"
                      id="wasm-container"

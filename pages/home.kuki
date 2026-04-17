@@ -14,18 +14,18 @@ func HomePage() html.Fragment
 
     features := CardGrid(list of Feature{
         Feature{
-            title: "Rename .go to .kuki. It compiles.",
-            body: "Kukicha is a strict superset of Go. Your existing code works without changes. No rewriting or new build systems required.",
+            title: "Scannable by design",
+            body: "Kukicha forms like list of string, onerr return, and equals let a beginner skim a file and follow what it does. No dense syntax to decode first.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/kukicha-quick-reference.md",
         },
         Feature{
-            title: "Adopt features gradually",
-            body: "Pipes, onerr, enums, if-expressions, and readable operators. Add these to your Go code one line at a time.",
+            title: "Graduate into Go",
+            body: "When you want terser code, drop back to []string, != nil, and &&. Kukicha is a strict superset of Go, so the language you graduate into is Go itself.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/faq.md#coming-from-go",
         },
         Feature{
-            title: "Convert back to Go anytime",
-            body: "The kukicha brew command converts your .kuki files into standalone, idiomatic Go. There is no vendor lock-in.",
+            title: "No lock-in, ever",
+            body: "Rename a .go file to .kuki and it compiles unchanged. Run kukicha brew to convert any .kuki file back into standalone, idiomatic Go.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/TRANSPILER-TODO.md#2-kukicha-brew-kukicha---go-",
         },
     })
@@ -37,8 +37,8 @@ func HomePage() html.Fragment
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/production-patterns-tutorial.md",
         },
         Feature{
-            title: "42+ stdlib packages",
-            body: "Includes support for fetch, slice, sort, MCP, LLM, HTML, and shell commands. Built for CLI tools and AI agents.",
+            title: "Stdlib that stays skimmable",
+            body: "42+ packages: fetch, slice, sort, MCP, LLM, HTML, shell. The same readable API whether your surrounding code is Kukicha forms or plain Go.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md",
         },
         Feature{
