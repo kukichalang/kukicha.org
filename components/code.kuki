@@ -34,7 +34,7 @@ func CodeCompare() html.Fragment
             onerr return explain "pipeline failed"
 
         label := if count == 1 then "item" else "items"</code></pre>
-                <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--color-text-light);">Every .go file is valid .kuki unchanged &mdash; so the language you graduate into is Go itself.</p>
+                <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--color-text-light);">Every .go file is valid .kuki unchanged.</p>
             </div>
         </div>
     ')

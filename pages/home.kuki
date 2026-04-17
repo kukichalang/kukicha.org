@@ -20,7 +20,7 @@ func HomePage() html.Fragment
         },
         Feature{
             title: "Graduate into Go",
-            body: "When you want terser code, drop back to []string, != nil, and &&. Kukicha is a strict superset of Go, so the language you graduate into is Go itself.",
+            body: "When you want terser code, drop back to []string, != nil, and &&. Kukicha is a strict superset of Go.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/faq.md#coming-from-go",
         },
         Feature{

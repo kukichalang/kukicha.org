@@ -11,7 +11,7 @@ func Hero() html.Fragment
                 <span class="badge">Readable</span>
                 <span class="badge">Single Binary</span>
             </p>
-            <p class="subtitle">Readable Kukicha forms &mdash; <code>list of string</code>, <code>onerr return</code>, <code>and</code>/<code>or</code>/<code>not</code> &mdash; while you&#39;re learning. Plain Go &mdash; <code>[]string</code>, <code>!= nil</code>, <code>&amp;&amp;</code> &mdash; when you&#39;re fluent. Same file, same compiler. Kukicha stdlib stays understandable.</p>
+            <p class="subtitle">Readable Kukicha forms &mdash; <code>list of string</code>, <code>onerr return</code>, <code>and</code>/<code>or</code>/<code>not</code> &mdash; while you&#39;re learning. Plain Go &mdash; <code>[]string</code>, <code>!= nil</code>, <code>&amp;&amp;</code> &mdash; when you&#39;re fluent. Same file, same compiler. Keep using the easy-to-use Kukicha stdlib.</p>
             <div class="hero-cta">
                 <div class="wasm-container"
                      id="wasm-container"
@@ -22,7 +22,7 @@ func Hero() html.Fragment
                 </div>
                 <a class="button outline large" href="https://github.com/kukichalang/kukicha">Get Started &rarr;</a>
             </div>
-            <p><small>Stem Panic is a game written in Kukicha, running live as WASM. Built with <a href="https://ebitengine.org/">Ebitengine</a> by Hajime Hoshi.</small></p>
+            <p><small>Stem Panic is a game written in Kukicha, running live as WASM.</small></p>
         </section>
     ')
 
