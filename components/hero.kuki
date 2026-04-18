@@ -5,7 +5,7 @@ import "stdlib/html"
 func Hero() html.Fragment
     return html.Render('
         <section class="hero">
-            <p><a class="badge success" href="https://github.com/kukichalang/kukicha/releases/latest" title="See what&#39;s new in v0.1.11">v0.1.11 &mdash; latest release &nearr;</a></p>
+            <p><a class="badge success" href="https://github.com/kukichalang/kukicha/releases/latest" title="See what&#39;s new in v0.1.12">v0.1.12 &mdash; latest release &nearr;</a></p>
             <h1>Brewed from Go</h1>
             <p class="hero-badges">
                 <span class="badge">Readable</span>
