@@ -22,7 +22,7 @@ func Tutorials() html.Fragment
                 </div>
                 <div role="tabpanel">
                     <ul>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/game/01-hello-world.md">Game Tutorials</a>: Eight lessons to build Breakout</li>
+                        <li><a href="https://github.com/kukichalang/game/blob/main/docs/tutorials/game/01-hello-world.md">Game Tutorials</a>: Eight lessons to build Breakout</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/cli-explorer-tutorial.md">CLI Tool</a>: Types, methods, and API data</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/web-app-tutorial.md">Web App</a>: HTTP servers and REST APIs</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/agent-workflow-tutorial.md">AI Agent Tools</a>: Building MCP servers</li>
