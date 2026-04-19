@@ -17,7 +17,7 @@ func Card(f Feature) html.Fragment
                 <p>{html.Escape(f.body)}</p>
             </div>
             <footer>
-                <a class="button outline small" href="{html.Attr(f.href)}">Learn more &rarr;</a>
+                <a class="button outline small" href="{html.Escape(f.href)}">Learn more &rarr;</a>
             </footer>
         </article>
     ')
