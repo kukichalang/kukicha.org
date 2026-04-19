@@ -33,9 +33,9 @@ func Navbar(brand string, links list of NavLink) html.Fragment
     items := html.Render("")
     for link in links
         if link.dialogFor isnt ""
-            items = html.Render('{html.Embed(items)} <button class="nav-link" commandfor="{html.Attr(link.dialogFor)}" command="show-modal">{html.Escape(link.label)}</button>')
+            items = html.Render('{html.Embed(items)} <button class="nav-link" commandfor="{html.Escape(link.dialogFor)}" command="show-modal">{html.Escape(link.label)}</button>')
         else
-            items = html.Render('{html.Embed(items)} <a href="{html.Attr(link.href)}" class="{html.Attr(link.cls)}">{html.Escape(link.label)}</a>')
+            items = html.Render('{html.Embed(items)} <a href="{html.Escape(link.href)}" class="{html.Escape(link.cls)}">{html.Escape(link.label)}</a>')
     return html.Render('
         <nav data-topnav>
             <strong>{html.Escape(brand)}</strong>
@@ -57,7 +57,7 @@ func Footer() html.Fragment
                 Games powered by <a href="https://ebitengine.org/">Ebitengine</a> &middot;
                 HTML inspired by <a href="https://templ.guide/">templ</a>
             </small></p>
-            <p><small>Kukicha v0.2.0</small></p>
+            <p><small>Kukicha v0.3.0</small></p>
             <p><small>This site is <a href="https://github.com/kukichalang/kukicha.org">built in Kukicha</a></small></p>
         </footer>
     ')
