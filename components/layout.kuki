@@ -57,7 +57,7 @@ func Footer() html.Fragment
                 Games powered by <a href="https://ebitengine.org/">Ebitengine</a> &middot;
                 HTML inspired by <a href="https://templ.guide/">templ</a>
             </small></p>
-            <p><small>Kukicha v0.5.0</small></p>
+            <p><small>Kukicha v0.6.0</small></p>
             <p><small>This site is <a href="https://github.com/kukichalang/kukicha.org">built in Kukicha</a></small></p>
         </footer>
     ')
