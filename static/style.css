@@ -12,16 +12,26 @@
 }
 
 /* Override Oat CSS variables for kukicha theme */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --color-primary: var(--tea-leaf);
-        --color-primary-hover: var(--tea-leaf-bright);
-    }
+:root {
+    /* Tea-themed color overrides */
+    --color-primary: var(--tea-leaf);
+    --color-primary-hover: var(--tea-leaf-bright);
+    --color-success: var(--twig-brown);
+    --color-success-foreground: #1a1a1a;
+    --color-accent: var(--brew-gold);
 }
+
 @media (prefers-color-scheme: light) {
     :root {
         --color-primary: var(--tea-leaf-dim);
         --color-primary-hover: var(--stem-green);
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-primary: var(--tea-leaf);
+        --color-primary-hover: var(--tea-leaf-bright);
     }
 }
 
@@ -97,13 +107,14 @@ a:hover {
     border-color: var(--twig-brown);
 }
 
-/* Styled hero badges */
+/* Styled hero badges - using Oat's badge component classes */
 .hero-badges .badge {
     border-color: var(--tea-leaf-dim);
     color: var(--tea-leaf-bright);
+    background-color: color-mix(in srgb, var(--tea-leaf-dim), transparent 10%);
 }
 
-/* Primary button with tea-leaf green */
+/* Primary button with tea-leaf green - using Oat button classes */
 .hero-cta [data-variant="primary"],
 .hero-cta .button.primary {
     background: var(--tea-leaf);
@@ -114,6 +125,14 @@ a:hover {
 .hero-cta .button.primary:hover {
     background: var(--tea-leaf-bright);
     border-color: var(--tea-leaf-bright);
+}
+
+/* Enhanced button styling using Oat variables */
+.button {
+    transition: all var(--transition-fast);
+}
+.button:active:not(:disabled) {
+    transform: translate(1px, 1px);
 }
 
 /* Outline button with warm twig tone */
@@ -164,13 +183,26 @@ a:hover {
     margin-top: 0;
 }
 
-/* Tea-themed cards: green top accent */
+/* Tea-themed cards - leveraging Oat's card component */
 .card-grid article {
     border-top: 3px solid var(--tea-leaf-dim);
-    transition: border-color 0.2s;
+    transition: border-color var(--transition-fast), transform var(--transition-fast);
+    background-color: var(--card);
+    border-radius: var(--radius-medium);
+    overflow: hidden;
 }
 .card-grid article:hover {
     border-top-color: var(--tea-leaf-bright);
+    transform: translateY(-2px);
+}
+.card-grid article header {
+    padding: var(--space-4);
+}
+.card-grid article div {
+    padding: 0 var(--space-4) var(--space-4);
+}
+.card-grid article footer {
+    padding: 0 var(--space-4) var(--space-4);
 }
 .card-grid article h3 {
     color: var(--tea-leaf-bright);
@@ -252,12 +284,44 @@ button.nav-link:hover {
     color: var(--tea-leaf-bright);
 }
 
-/* Navbar brand in tea green */
+/* Navbar brand in tea green - using Oat's typography classes */
 nav[data-topnav] strong {
     color: var(--tea-leaf-bright);
+    font-weight: var(--font-semibold);
 }
 nav[data-topnav] a:hover {
     color: var(--tea-leaf-bright);
+}
+
+/* Enhanced link styling using Oat variables */
+a {
+    transition: color var(--transition-fast);
+}
+
+/* Utility classes using Oat's design system */
+.text-sm {
+    font-size: var(--text-7);
+}
+
+.muted-foreground {
+    color: var(--muted-foreground);
+}
+
+.text-regular {
+    font-size: var(--text-regular);
+}
+
+/* Container with max-width using Oat's spacing */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-4);
+}
+
+/* Code blocks with Oat styling */
+pre code {
+    background-color: transparent;
+    padding: 0;
 }
 footer {
     text-align: center;

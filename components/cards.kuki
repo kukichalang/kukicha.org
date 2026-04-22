@@ -14,7 +14,7 @@ func Card(f Feature) html.Fragment
                 <h3>{html.Escape(f.title)}</h3>
             </header>
             <div>
-                <p>{html.Escape(f.body)}</p>
+                <p class="text-regular muted-foreground">{html.Escape(f.body)}</p>
             </div>
             <footer>
                 <a class="button outline small" href="{html.Escape(f.href)}">Learn more &rarr;</a>

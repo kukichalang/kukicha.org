@@ -22,7 +22,7 @@ func Hero() html.Fragment
                 </div>
                 <a class="button outline large" href="https://github.com/kukichalang/kukicha">Get Started &rarr;</a>
             </div>
-            <p><small>Stem Panic is a game written in Kukicha, running live as WASM.</small></p>
+            <p class="text-sm muted-foreground"><small>Stem Panic is a game written in Kukicha, running live as WASM.</small></p>
         </section>
     ')
 
