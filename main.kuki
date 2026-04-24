@@ -3,6 +3,7 @@
 # Run: kukicha build . && ./kukicha.org
 # Or:  kukicha run main.kuki
 
+import "stdlib/datetime"
 import "stdlib/html"
 import "stdlib/http" as httphelper
 import "stdlib/json"
@@ -127,7 +128,7 @@ func checkRate(ip string) bool
         rateMap[ip] = rateBucket{tokens: 9, lastRefill: now}
         return true
     elapsed := now.Sub(bucket.lastRefill)
-    refill := (elapsed.Nanoseconds() / 6000000000) as int
+    refill := (elapsed / datetime.Seconds(6)) as int
     if refill > 0
         bucket.tokens = bucket.tokens + refill
         if bucket.tokens > 10
