@@ -127,7 +127,7 @@ func checkRate(ip string) bool
         rateMap[ip] = rateBucket{tokens: 9, lastRefill: now}
         return true
     elapsed := now.Sub(bucket.lastRefill)
-    refill := int((elapsed as time.Duration) / (6 * time.Second))
+    refill := (elapsed.Nanoseconds() / 6000000000) as int
     if refill > 0
         bucket.tokens = bucket.tokens + refill
         if bucket.tokens > 10

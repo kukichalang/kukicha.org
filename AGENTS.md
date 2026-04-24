@@ -390,17 +390,40 @@ kukicha init [module]          # init project (go mod init + extract stdlib)
 kukicha check file.kuki        # validate syntax
 kukicha check --json file.kuki # JSON diagnostics
 kukicha run file.kuki          # transpile + compile + run
+kukicha run --json file.kuki   # JSON compile errors (program output unchanged on success)
 kukicha build file.kuki        # compile to binary
 kukicha build myapp/           # build directory
 kukicha build --wasm file.kuki # WebAssembly output
+kukicha build --json file.kuki # JSON build result
 kukicha fmt -w file.kuki       # format in place
 kukicha fmt --check dir/       # check formatting (CI / pre-commit gate)
+kukicha fmt --check --json dir/ # JSON array of unformatted file paths
 kukicha brew file.kuki         # convert .kuki to standalone Go
 kukicha pack skill.kuki        # package skill with SKILL.md + binary
+kukicha context myapp/         # project metadata as JSON (agents, IDEs, CI)
 kukicha audit                  # vulnerability check
 ```
 
 Run `kukicha fmt -w` before committing; CI should run `kukicha fmt --check`.
+
+`kukicha context <file|dir>` emits a JSON snapshot for agents and CI — top-level decls only (methods, fields, enum cases, interface methods are excluded to keep the shape flat):
+
+```json
+{
+  "kukicha_version": "0.6.4",
+  "petiole": "myapp",
+  "is_directory": true,
+  "files": ["main.kuki", "lib.kuki"],
+  "entry_point": "main.kuki",
+  "imports": [{"path": "stdlib/slice", "alias": ""}],
+  "functions": ["Hello", "main"],
+  "types": ["User"],
+  "enums": ["Status"],
+  "commands": {"check": "...", "build": "...", "run": "..."}
+}
+```
+
+`entry_point` is omitted for library projects or when multiple `func main()` declarations are found across files. Names are deduplicated across files and sorted.
 
 ---
 
@@ -472,11 +495,13 @@ box := sandbox.New("/var/data") onerr return
 content := sandbox.Read(box, userPath) onerr return   # can't escape root
 ```
 
-**shell** — `Run` (fixed literals only), `Output` (variable args), `New`/`Dir`/`Env`/`Execute` (builder)
+**shell** — `Run` (fixed literals only), `Output` (variable args), `Lines` (stdout split into lines, trailing empty stripped), `New`/`Dir`/`Env`/`Execute` (builder), `Require` (stdout or err-wrapping-stderr; pairs with `Execute` in pipes)
 
 ```kukicha
-diff := shell.Run("git diff --staged") onerr panic "{error}"
-out  := shell.Output("git", "log", "--oneline", branch) onerr panic "{error}"
+diff  := shell.Run("git diff --staged") onerr panic "{error}"
+out   := shell.Output("git", "log", "--oneline", branch) onerr panic "{error}"
+files := shell.Lines("git", "ls-files") onerr return
+tests := shell.New("go", "test", "./...") |> shell.Execute() |> shell.Require() onerr return
 ```
 
 #### HTTP & Networking
@@ -609,7 +634,7 @@ defer db.Close(pool)
 
 #### DevOps & Infrastructure
 
-**container** (as `docker`) — Docker/Podman: `Connect`, `ListContainers`, `ListImages`, `Pull`, `Run`, `Stop`, `Remove`, `Build`, `Logs`, `Wait`, `Exec`
+**container** (as `docker`) — Docker/Podman: `Connect`/`ConnectRemote`, `Run`, `Exec`, `Logs`, `Build`, `Pull`/`PullAuth`, `LoginFromConfig`, `Wait`/`WaitCtx`, `Events`/`EventsCtx`, `CopyTo`/`CopyFrom`. For anything not wrapped here, use `engine.Cli` directly.
 
 **git** — Git/GitHub via `gh`: `ListTags`, `TagExists`, `DefaultBranch`, `CreateRelease`, `PreviewRelease`
 
