@@ -3,7 +3,7 @@ FROM golang:1.26 AS builder
 WORKDIR /src
 
 # Install kukicha compiler and brotli
-RUN go install github.com/kukichalang/kukicha/cmd/kukicha@v0.6.4 && \
+RUN go install github.com/kukichalang/kukicha/cmd/kukicha@v0.6.5 && \
     apt-get update -qq && apt-get install -y --no-install-recommends brotli
 
 # Copy source
@@ -18,7 +18,7 @@ RUN brotli -9 --keep static/wasm/kukicha.wasm static/wasm/stem-panic.wasm
 # Warmup stage — pre-download kukicha stdlib Go dependencies into the module
 # cache so playground executions don't need network access.
 FROM golang:1.26 AS warmup
-RUN go install github.com/kukichalang/kukicha/cmd/kukicha@v0.6.4
+RUN go install github.com/kukichalang/kukicha/cmd/kukicha@v0.6.5
 RUN mkdir /warm && cd /warm && \
     printf 'import "stdlib/slice"\nimport "stdlib/json"\nimport "time"\n\nfunc main()\n    nums := list of int{1, 2, 3}\n    evens := nums |> slice.Filter(n => n > 1)\n    out := json.Marshal(evens) onerr panic "{error}"\n    _ = time.Now()\n    print(out as string)\n' > warm.kuki && \
     kukicha run warm.kuki && \
@@ -27,7 +27,7 @@ RUN mkdir /warm && cd /warm && \
 # Runtime stage — Go toolchain + kukicha + pre-warmed module cache
 # Required for server-side playground compilation via kukicha run.
 FROM golang:1.26-bookworm
-RUN go install github.com/kukichalang/kukicha/cmd/kukicha@v0.6.4
+RUN go install github.com/kukichalang/kukicha/cmd/kukicha@v0.6.5
 
 # Copy pre-warmed Go module and build caches from warmup stage
 COPY --from=warmup /go/pkg/mod /go/pkg/mod
