@@ -26,7 +26,7 @@ func HomePage() html.Fragment
         Feature{
             title: "No lock-in, ever",
             body: "Rename a .go file to .kuki and it compiles unchanged. Run kukicha brew to convert any .kuki file back into standalone, idiomatic Go.",
-            href: "https://github.com/kukichalang/kukicha/blob/main/docs/TRANSPILER-TODO.md#2-kukicha-brew-kukicha---go-",
+            href: "https://github.com/kukichalang/kukicha#commands",
         },
     })
 
@@ -34,17 +34,17 @@ func HomePage() html.Fragment
         Feature{
             title: "Compile-time security",
             body: "The compiler detects SQL injection, XSS, SSRF, path traversal, and command injection before your code runs.",
-            href: "https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/production-patterns-tutorial.md",
+            href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md#security--compiler-enforced-checks",
         },
         Feature{
             title: "Stdlib that stays skimmable",
             body: "42+ packages: fetch, slice, sort, MCP, LLM, HTML, shell. The same readable API whether your surrounding code is Kukicha forms or plain Go.",
-            href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md",
+            href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md#stdlib-packages",
         },
         Feature{
             title: "Native Go performance",
             body: "Compiles to a single binary with no runtime overhead. Built-in WASM support and Go's concurrency model.",
-            href: "https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/cli-explorer-tutorial.md",
+            href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md#security--compiler-enforced-checks",
         },
     })
 

@@ -52,7 +52,7 @@ func SourceReveal() html.Fragment
                 </div>
             </details>
             <p class="meta">
-                Want to build your own? The <a href="https://github.com/kukichalang/game/blob/main/docs/tutorials/game/01-hello-world.md">8-lesson game tutorial</a>
+                Want to build your own? The <a href="https://github.com/kukichalang/game/blob/main/docs/tutorials/01-hello-world.md">8-lesson game tutorial</a>
                 takes you from Hello World to a playable game in Kukicha.
             </p>
         </section>

@@ -22,7 +22,7 @@ func Tutorials() html.Fragment
                 </div>
                 <div role="tabpanel">
                     <ul>
-                        <li><a href="https://github.com/kukichalang/game/blob/main/docs/tutorials/game/01-hello-world.md">Game Tutorials</a>: Eight lessons to build Breakout</li>
+                        <li><a href="https://github.com/kukichalang/game/blob/main/docs/tutorials/01-hello-world.md">Game Tutorials</a>: Eight lessons to build Breakout</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/cli-explorer-tutorial.md">CLI Tool</a>: Types, methods, and API data</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/web-app-tutorial.md">Web App</a>: HTTP servers and REST APIs</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/agent-workflow-tutorial.md">AI Agent Tools</a>: Building MCP servers</li>
@@ -32,7 +32,7 @@ func Tutorials() html.Fragment
                     <ul>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/beginner-tutorial.md">First Program</a>: No prior experience required</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/agent-workflow-tutorial.md">Agent Workflow</a>: Let AI write code while you review</li>
-                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md">Stdlib Reference</a>: 42+ pre-built packages</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/.agent/skills/stdlib/SKILL.md">Stdlib Reference</a>: 42+ pre-built packages</li>
                     </ul>
                 </div>
             </ot-tabs>
