@@ -658,7 +658,7 @@ import "stdlib/llm/chat"
 reply := chat.New("openai:gpt-4o-mini") |> chat.Retry(3, 2000) |> chat.Ask("Hello!") onerr panic "{error}"
 ```
 
-**mcp** — MCP server + client: `New`, `Tool`, `Serve`, `Connect`, `BearerConnect`, `ListTools`, `CallTool`
+**mcp** — MCP server + client: `New`, `Serve`, `ServeHTTP`, `Tool`, `ToolWithOpts`, `ToolRich`, `Resource`, `TextResource`, `ResourceTemplate`, `TextResourceTemplate`, `Prompt`, `UserPrompt`, `Prop`, `Schema`, `Required`, `TextResult`, `ErrorResult`, `Connect`, `BearerConnect`, `ConnectWithClient`, `Close`, `ListTools`, `CallTool`, `ListResources`, `ListResourceTemplates`, `ReadResource`, `ListPrompts`, `GetPrompt`, `NewWithCompletion`, `Completions`, `CompletionsPage`, `NewRouter`
 
 ```kukicha
 # Server
