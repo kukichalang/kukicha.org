@@ -187,7 +187,8 @@ func handleRun(w http.ResponseWriter, r reference http.Request)
     select
         when send true to execSem
             defer func()
-                receive from execSem()
+                receive from execSem
+            ()
         otherwise
             http.Error(w, "server busy, try again shortly", 503)
             return
@@ -214,7 +215,7 @@ func handleRun(w http.ResponseWriter, r reference http.Request)
     if denied := scanImports(req.Source); denied isnt ""
         resp := runResponse{Errors: "import \"{denied}\" is not allowed in the playground"}
         w.Header().Set("Content-Type", "application/json")
-        json.MarshalWrite(w, resp) onerr
+        json.Write(w, resp) onerr
             log.Println("write error: {error}")
 
         return
@@ -264,7 +265,7 @@ func handleRun(w http.ResponseWriter, r reference http.Request)
             resp.Errors = errStr
 
     w.Header().Set("Content-Type", "application/json")
-    json.MarshalWrite(w, resp) onerr
+    json.Write(w, resp) onerr
         log.Println("write error: {error}")
 
 # serveWasm serves a .wasm file with Brotli encoding when the client supports
