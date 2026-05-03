@@ -1,13 +1,3 @@
-# kukicha.org — entry point
-# Routes, server startup, static file serving.
-# Run: kukicha build . && ./kukicha.org
-# Or:  kukicha run main.kuki
-
-import "stdlib/datetime"
-import "stdlib/html"
-import "stdlib/http" as httphelper
-import "stdlib/json"
-import "stdlib/env"
 import "bytes"
 import "context"
 import "io"
@@ -17,6 +7,16 @@ import "net/http"
 import "os"
 import "os/exec"
 import "path/filepath"
+# kukicha.org — entry point
+# Routes, server startup, static file serving.
+# Run: kukicha build . && ./kukicha.org
+# Or:  kukicha run main.kuki
+
+import "stdlib/datetime"
+import "stdlib/env"
+import "stdlib/html"
+import "stdlib/http" as httphelper
+import "stdlib/json"
 import "strings"
 import "sync"
 import "time"
@@ -26,8 +26,11 @@ var stemPanicSource string = "static/stem-panic-source.txt"
 
 # Playground configuration
 var maxSourceSize int = 65536
+
 var maxOutputSize int = 1048576
+
 var execTimeout time.Duration = 10 * time.Second
+
 var maxConcurrent int = 5
 
 # Concurrency semaphore for playground executions
@@ -35,6 +38,7 @@ var execSem channel of bool = make(channel of bool, 5)
 
 # Rate limiter: per-IP token bucket
 var rateMu sync.Mutex
+
 var rateMap map of string to rateBucket = make(map of string to rateBucket)
 
 type rateBucket
@@ -160,7 +164,7 @@ func scanImports(source string) string
         end := strings.Index(rest[1:], "\"")
         if end < 0
             continue
-        pkg := rest[1 : end+1]
+        pkg := rest[1:end + 1]
         # Check against allowlists
         if strings.HasPrefix(pkg, "stdlib/")
             if not allowedStdlib[pkg]
@@ -183,8 +187,7 @@ func handleRun(w http.ResponseWriter, r reference http.Request)
     select
         when send true to execSem
             defer func()
-                receive from execSem
-            ()
+                receive from execSem()
         otherwise
             http.Error(w, "server busy, try again shortly", 503)
             return
@@ -194,14 +197,15 @@ func handleRun(w http.ResponseWriter, r reference http.Request)
     body := io.ReadAll(limited) onerr
         http.Error(w, "bad request", 400)
         return
+
     if len(body) > maxSourceSize
         http.Error(w, "source too large (64 KB max)", 413)
         return
 
-    req := runRequest{}
-    json.UnmarshalString(body as string, reference of req) onerr
+    req := json.ParseString of runRequest from body as string onerr
         http.Error(w, "invalid JSON", 400)
         return
+
     if strings.TrimSpace(req.Source) == ""
         http.Error(w, "empty source", 400)
         return
@@ -212,12 +216,14 @@ func handleRun(w http.ResponseWriter, r reference http.Request)
         w.Header().Set("Content-Type", "application/json")
         json.MarshalWrite(w, resp) onerr
             log.Println("write error: {error}")
+
         return
 
     # Write source to a temp .kuki file
     tmpDir := os.MkdirTemp("", "playground-*") onerr
         http.Error(w, "internal error", 500)
         return
+
     defer os.RemoveAll(tmpDir)
     tmpFile := filepath.Join(tmpDir, "main.kuki")
     os.WriteFile(tmpFile, req.Source as list of byte, 0o644) onerr
@@ -234,7 +240,7 @@ func handleRun(w http.ResponseWriter, r reference http.Request)
     cmd.Stderr = reference of stderr
     start := time.Now()
     runErr := cmd.Run()
-    duration := (time.Since(start) as time.Duration).Milliseconds()
+    duration := time.Since(start) as time.Duration.Milliseconds()
 
     # Truncate output if needed
     outStr := stdout.String()
@@ -273,9 +279,11 @@ func serveWasm(path string, w http.ResponseWriter, r reference http.Request)
         data := os.ReadFile(path + ".br") onerr
             http.ServeFile(w, r, path)
             return
+
         w.Header().Set("Content-Encoding", "br")
         _ = w.Write(data) onerr
             log.Println("write error: {error}")
+
         return
     http.ServeFile(w, r, path)
 
@@ -332,6 +340,7 @@ func main()
     mux.HandleFunc("GET /static/wasm/kukicha.wasm", (w http.ResponseWriter, r reference http.Request) =>
         serveWasm("static/wasm/kukicha.wasm", w, r)
     )
+
     mux.HandleFunc("GET /static/wasm/stem-panic.wasm", (w http.ResponseWriter, r reference http.Request) =>
         serveWasm("static/wasm/stem-panic.wasm", w, r)
     )
