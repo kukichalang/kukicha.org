@@ -20,7 +20,7 @@ RUN brotli -9 --keep static/wasm/kukicha.wasm static/wasm/stem-panic.wasm
 FROM golang:1.26 AS warmup
 RUN go install github.com/kukichalang/kukicha/cmd/kukicha@v0.9.0
 RUN mkdir /warm && cd /warm && \
-    printf 'import "stdlib/slice"\nimport "stdlib/json"\nimport "time"\n\nfunc main()\n    nums := list of int{1, 2, 3}\n    evens := nums |> slice.Filter(n => n > 1)\n    out := json.Marshal(evens) onerr panic "{error}"\n    _ = time.Now()\n    print(out as string)\n' > warm.kuki && \
+    printf 'import "stdlib/slice"\nimport "stdlib/json"\nimport "time"\n\nfunc main()\n    nums := list of int{1, 2, 3}\n    evens := nums |> slice.Filter(n => n > 1)\n    out := json.Bytes(evens) onerr panic "{error}"\n    _ = time.Now()\n    print(out as string)\n' > warm.kuki && \
     kukicha run warm.kuki && \
     rm -rf /warm
 
