@@ -276,7 +276,7 @@ func serveWasm(path string, w http.ResponseWriter, r reference http.Request)
     w.Header().Set("Vary", "Accept-Encoding")
     w.Header().Set("Content-Type", "application/wasm")
     w.Header().Set("Cache-Control", "public, max-age=3600")
-    if strings.Contains(r.Header.Get("Accept-Encoding"), "br")
+    if "br" in r.Header.Get("Accept-Encoding")
         data := os.ReadFile(path + ".br") onerr
             http.ServeFile(w, r, path)
             return
