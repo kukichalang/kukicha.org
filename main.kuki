@@ -282,7 +282,7 @@ func serveWasm(path string, w http.ResponseWriter, r reference http.Request)
             return
 
         w.Header().Set("Content-Encoding", "br")
-        _ = w.Write(data) onerr
+        w.Write(data) onerr
             log.Println("write error: {error}")
 
         return
