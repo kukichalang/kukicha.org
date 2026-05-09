@@ -8,7 +8,7 @@ type NavLink
     cls string
     dialogFor string
 
-func Layout(title string, content html.Fragment) html.Fragment
+func Layout(title: string, content: html.Fragment) html.Fragment
     return html.Render('
         <!DOCTYPE html>
         <html lang="en">
@@ -29,13 +29,17 @@ func Layout(title string, content html.Fragment) html.Fragment
         </html>
     ')
 
-func Navbar(brand string, links list of NavLink) html.Fragment
+func Navbar(brand: string, links: list of NavLink) html.Fragment
     items := html.Render("")
     for link in links
         if link.dialogFor isnt ""
-            items = html.Render('{html.Embed(items)} <button class="nav-link" commandfor="{html.Escape(link.dialogFor)}" command="show-modal">{html.Escape(link.label)}</button>')
+            items = html.Render(
+                '{html.Embed(items)} <button class="nav-link" commandfor="{html.Escape(link.dialogFor)}" command="show-modal">{html.Escape(link.label)}</button>',
+            )
         else
-            items = html.Render('{html.Embed(items)} <a href="{html.Escape(link.href)}" class="{html.Escape(link.cls)}">{html.Escape(link.label)}</a>')
+            items = html.Render(
+                '{html.Embed(items)} <a href="{html.Escape(link.href)}" class="{html.Escape(link.cls)}">{html.Escape(link.label)}</a>',
+            )
     return html.Render('
         <nav data-topnav>
             <strong>{html.Escape(brand)}</strong>

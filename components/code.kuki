@@ -1,8 +1,8 @@
+import "os"
+import "stdlib/cast"
 # components/code.kuki — Code comparison and source reveal
 
 import "stdlib/html"
-import "stdlib/cast"
-import "os"
 
 func CodeCompare() html.Fragment
     return html.Render('
@@ -58,7 +58,7 @@ func SourceReveal() html.Fragment
         </section>
     ')
 
-func SourceCode(path string) html.Fragment
+func SourceCode(path: string) html.Fragment
     raw, readErr := os.ReadFile(path)
     if readErr isnt empty
         return html.Render('<pre><code>Source not available.</code></pre>')

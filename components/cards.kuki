@@ -7,7 +7,7 @@ type Feature
     body string
     href string
 
-func Card(f Feature) html.Fragment
+func Card(f: Feature) html.Fragment
     return html.Render('
         <article class="card">
             <header>
@@ -22,7 +22,7 @@ func Card(f Feature) html.Fragment
         </article>
     ')
 
-func CardGrid(features list of Feature) html.Fragment
+func CardGrid(features: list of Feature) html.Fragment
     cards := html.Render("")
     for f in features
         cards = html.Render('{html.Embed(cards)}{html.Embed(Card(f))}')

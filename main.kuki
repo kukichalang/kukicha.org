@@ -1,7 +1,6 @@
 import "bytes"
 import "context"
 import "io"
-import "stdlib/log"
 import "mime"
 import "net/http"
 import "os"
@@ -17,6 +16,7 @@ import "stdlib/env"
 import "stdlib/html"
 import "stdlib/http" as httphelper
 import "stdlib/json"
+import "stdlib/log"
 import "strings"
 import "sync"
 import "time"
@@ -115,7 +115,7 @@ type runResponse
 
 # clientIP extracts the caller's IP from X-Forwarded-For (Cloud Run sets this)
 # or falls back to RemoteAddr.
-func clientIP(r reference http.Request) string
+func clientIP(r: reference http.Request) string
     if xff := r.Header.Get("X-Forwarded-For"); xff isnt ""
         parts := strings.Split(xff, ",")
         return strings.TrimSpace(parts[0])
@@ -123,7 +123,7 @@ func clientIP(r reference http.Request) string
 
 # checkRate returns true if the request is allowed. Uses a simple token bucket:
 # 10 tokens max, refill 1 token per 6 seconds (≈10/min).
-func checkRate(ip string) bool
+func checkRate(ip: string) bool
     rateMu.Lock()
     defer rateMu.Unlock()
     bucket, ok := rateMap[ip]
@@ -148,7 +148,7 @@ func checkRate(ip string) bool
 # scanImports extracts all quoted import paths from the source and returns
 # the first one that isn't in the allowlists. Returns "" if all are allowed.
 # This is a string-level scan before compilation — not a full parser.
-func scanImports(source string) string
+func scanImports(source: string) string
     # Find all import "..." patterns in the source
     lines := strings.Split(source, "\n")
     for line in lines
@@ -177,7 +177,7 @@ func scanImports(source string) string
 # handleRun is the POST /api/run handler. It validates the source, scans for
 # blocked imports, writes a temp .kuki file, runs kukicha with a timeout,
 # and returns JSON with the output or errors.
-func handleRun(w http.ResponseWriter, r reference http.Request)
+func handleRun(w: http.ResponseWriter, r: reference http.Request)
     ip := clientIP(r)
     if not checkRate(ip)
         http.Error(w, "rate limit exceeded", 429)
@@ -272,7 +272,7 @@ func handleRun(w http.ResponseWriter, r reference http.Request)
 # it. The .wasm.br file must exist alongside the .wasm (generated at build time
 # by the Dockerfile). Falls back to plain serving if .br is absent or the
 # client does not advertise Brotli support.
-func serveWasm(path string, w http.ResponseWriter, r reference http.Request)
+func serveWasm(path: string, w: http.ResponseWriter, r: reference http.Request)
     w.Header().Set("Vary", "Accept-Encoding")
     w.Header().Set("Content-Type", "application/wasm")
     w.Header().Set("Cache-Control", "public, max-age=3600")
@@ -302,47 +302,47 @@ func main()
     mux := http.NewServeMux()
 
     # Full page: GET /
-    mux.HandleFunc("GET /", (w http.ResponseWriter, r reference http.Request) =>
+    mux.HandleFunc("GET /", (w: http.ResponseWriter, r: reference http.Request) =>
         page := Layout("Kukicha — a language you can read", HomePage())
         html.WriteTo(w, page) onerr
             log.Error("write error", "err", error)
     )
 
     # HTMX partial: loads the WASM game player on click
-    mux.HandleFunc("GET /wasm-player", (w http.ResponseWriter, r reference http.Request) =>
+    mux.HandleFunc("GET /wasm-player", (w: http.ResponseWriter, r: reference http.Request) =>
         html.WriteTo(w, WasmPlayer()) onerr
             log.Error("write error", "err", error)
     )
 
     # Standalone game page (loaded in iframe)
-    mux.HandleFunc("GET /game", (w http.ResponseWriter, r reference http.Request) =>
+    mux.HandleFunc("GET /game", (w: http.ResponseWriter, r: reference http.Request) =>
         html.WriteTo(w, GamePage()) onerr
             log.Error("write error", "err", error)
     )
 
     # HTMX partial: close button returns the play button
-    mux.HandleFunc("GET /wasm-close", (w http.ResponseWriter, r reference http.Request) =>
+    mux.HandleFunc("GET /wasm-close", (w: http.ResponseWriter, r: reference http.Request) =>
         html.WriteTo(w, WasmPlayButton()) onerr
             log.Error("write error", "err", error)
     )
 
     # HTMX partial: loads syntax-highlighted Stem Panic source on expand
-    mux.HandleFunc("GET /source", (w http.ResponseWriter, r reference http.Request) =>
+    mux.HandleFunc("GET /source", (w: http.ResponseWriter, r: reference http.Request) =>
         html.WriteTo(w, SourceCode(stemPanicSource)) onerr
             log.Error("write error", "err", error)
     )
 
     # Playground: compile and run Kukicha code server-side
-    mux.HandleFunc("POST /api/run", (w http.ResponseWriter, r reference http.Request) =>
+    mux.HandleFunc("POST /api/run", (w: http.ResponseWriter, r: reference http.Request) =>
         handleRun(w, r)
     )
 
     # WASM files — served with Brotli encoding when the client supports it
-    mux.HandleFunc("GET /static/wasm/kukicha.wasm", (w http.ResponseWriter, r reference http.Request) =>
+    mux.HandleFunc("GET /static/wasm/kukicha.wasm", (w: http.ResponseWriter, r: reference http.Request) =>
         serveWasm("static/wasm/kukicha.wasm", w, r)
     )
 
-    mux.HandleFunc("GET /static/wasm/stem-panic.wasm", (w http.ResponseWriter, r reference http.Request) =>
+    mux.HandleFunc("GET /static/wasm/stem-panic.wasm", (w: http.ResponseWriter, r: reference http.Request) =>
         serveWasm("static/wasm/stem-panic.wasm", w, r)
     )
 
@@ -351,5 +351,5 @@ func main()
     mux.Handle("GET /static/", http.StripPrefix("/static/", fs))
 
     port := env.GetOr("PORT", "8080")
-    print("kukicha.org listening on http://localhost:{port}")
-    httphelper.Serve(":{port}", mux) onerr panic "{error}"
+    log.Info("kukicha.org listening", "addr", "http://localhost:{port}")
+    httphelper.Serve(":{port}", mux) onerr log.Fatal("serve failed", "err", error)
