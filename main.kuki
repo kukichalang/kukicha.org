@@ -1,7 +1,7 @@
 import "bytes"
 import "context"
 import "io"
-import "log"
+import "stdlib/log"
 import "mime"
 import "net/http"
 import "os"
@@ -216,7 +216,7 @@ func handleRun(w http.ResponseWriter, r reference http.Request)
         resp := runResponse{Errors: "import \"{denied}\" is not allowed in the playground"}
         w.Header().Set("Content-Type", "application/json")
         json.Write(w, resp) onerr
-            log.Println("write error: {error}")
+            log.Error("write error", "err", error)
 
         return
 
@@ -266,7 +266,7 @@ func handleRun(w http.ResponseWriter, r reference http.Request)
 
     w.Header().Set("Content-Type", "application/json")
     json.Write(w, resp) onerr
-        log.Println("write error: {error}")
+        log.Error("write error", "err", error)
 
 # serveWasm serves a .wasm file with Brotli encoding when the client supports
 # it. The .wasm.br file must exist alongside the .wasm (generated at build time
@@ -283,7 +283,7 @@ func serveWasm(path string, w http.ResponseWriter, r reference http.Request)
 
         w.Header().Set("Content-Encoding", "br")
         w.Write(data) onerr
-            log.Println("write error: {error}")
+            log.Error("write error", "err", error)
 
         return
     http.ServeFile(w, r, path)
@@ -305,31 +305,31 @@ func main()
     mux.HandleFunc("GET /", (w http.ResponseWriter, r reference http.Request) =>
         page := Layout("Kukicha — a language you can read", HomePage())
         html.WriteTo(w, page) onerr
-            log.Println("write error: {error}")
+            log.Error("write error", "err", error)
     )
 
     # HTMX partial: loads the WASM game player on click
     mux.HandleFunc("GET /wasm-player", (w http.ResponseWriter, r reference http.Request) =>
         html.WriteTo(w, WasmPlayer()) onerr
-            log.Println("write error: {error}")
+            log.Error("write error", "err", error)
     )
 
     # Standalone game page (loaded in iframe)
     mux.HandleFunc("GET /game", (w http.ResponseWriter, r reference http.Request) =>
         html.WriteTo(w, GamePage()) onerr
-            log.Println("write error: {error}")
+            log.Error("write error", "err", error)
     )
 
     # HTMX partial: close button returns the play button
     mux.HandleFunc("GET /wasm-close", (w http.ResponseWriter, r reference http.Request) =>
         html.WriteTo(w, WasmPlayButton()) onerr
-            log.Println("write error: {error}")
+            log.Error("write error", "err", error)
     )
 
     # HTMX partial: loads syntax-highlighted Stem Panic source on expand
     mux.HandleFunc("GET /source", (w http.ResponseWriter, r reference http.Request) =>
         html.WriteTo(w, SourceCode(stemPanicSource)) onerr
-            log.Println("write error: {error}")
+            log.Error("write error", "err", error)
     )
 
     # Playground: compile and run Kukicha code server-side
