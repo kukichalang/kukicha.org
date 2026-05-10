@@ -14,14 +14,14 @@ func HomePage() html.Fragment
 
     features := CardGrid(list of Feature{
         Feature{
-            title: "Scannable by design",
-            body: "Kukicha forms like list of string, onerr return, and equals let a beginner skim a file and follow what it does. No dense syntax to decode first.",
+            title: "Readable by design",
+            body: "English operators, pipes that flow left-to-right, onerr for error handling, and named enums. Skim a file and follow what it does — no dense syntax to decode first.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/kukicha-quick-reference.md",
         },
         Feature{
-            title: "Graduate into Go",
-            body: "When you want terser code, drop back to []string, != nil, and &&. Kukicha is a strict superset of Go.",
-            href: "https://github.com/kukichalang/kukicha/blob/main/docs/faq.md#coming-from-go",
+            title: "Batteries included",
+            body: "fetch, concurrent, llm, mcp, db, shell, html, table, color — 40+ packages with the same readable API. Reach for a stdlib package, not a third-party dependency.",
+            href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md#stdlib-packages",
         },
         Feature{
             title: "No lock-in, ever",
@@ -32,19 +32,19 @@ func HomePage() html.Fragment
 
     security := CardGrid(list of Feature{
         Feature{
-            title: "Compile-time security",
-            body: "The compiler detects SQL injection, XSS, SSRF, path traversal, and command injection before your code runs.",
+            title: "Safe by default",
+            body: "The compiler catches SQL injection, XSS, SSRF, path traversal, and command injection before your code runs. Errors are values, handled with onerr.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md#security--compiler-enforced-checks",
         },
         Feature{
-            title: "Stdlib that stays skimmable",
-            body: "42+ packages: fetch, slice, sort, MCP, LLM, HTML, shell. The same readable API whether your surrounding code is Kukicha forms or plain Go.",
+            title: "Friendly stdlib",
+            body: "fetch.GetJson, slice.Filter, concurrent.MapWithLimit, sort.ByKey, safe.Wrap, table.PrintWithStyle. Reads the same whether your code is Kukicha forms or plain Go.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md#stdlib-packages",
         },
         Feature{
-            title: "Native Go performance",
-            body: "Compiles to a single binary with no runtime overhead. Built-in WASM support and Go's concurrency model.",
-            href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md#security--compiler-enforced-checks",
+            title: "Ships as one file",
+            body: "kukicha build produces a single static binary — copy it to a server and run. Built-in WASM support, no runtime, Go's concurrency.",
+            href: "https://github.com/kukichalang/kukicha#commands",
         },
     })
 

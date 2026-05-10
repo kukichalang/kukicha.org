@@ -67,11 +67,11 @@ var allowedStdlib map of string to bool = map of string to bool{
     "stdlib/datetime": true,
     "stdlib/random": true,
     "stdlib/table": true,
+    "stdlib/template": true,
     "stdlib/html": true,
     "stdlib/retry": true,
     "stdlib/must": true,
     "stdlib/crypto": true,
-    "stdlib/template": true,
 }
 
 # allowedGoStdlib are the Go standard library packages playground code may import.
