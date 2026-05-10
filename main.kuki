@@ -189,7 +189,7 @@ func handleRun(w: http.ResponseWriter, r: reference http.Request)
             defer func()
                 receive from execSem
             ()
-        otherwise
+        default
             http.Error(w, "server busy, try again shortly", 503)
             return
 
