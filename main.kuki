@@ -17,7 +17,7 @@ import "stdlib/html"
 import "stdlib/http" as httphelper
 import "stdlib/json"
 import "stdlib/log"
-import "strings"
+import "stdlib/string" as strpkg
 import "sync"
 import "time"
 
@@ -117,8 +117,8 @@ type runResponse
 # or falls back to RemoteAddr.
 func clientIP(r: reference http.Request) string
     if xff := r.Header.Get("X-Forwarded-For"); xff isnt ""
-        parts := strings.Split(xff, ",")
-        return strings.TrimSpace(parts[0])
+        parts := strpkg.Split(xff, ",")
+        return strpkg.TrimSpace(parts[0])
     return r.RemoteAddr
 
 # checkRate returns true if the request is allowed. Uses a simple token bucket:
@@ -150,23 +150,23 @@ func checkRate(ip: string) bool
 # This is a string-level scan before compilation — not a full parser.
 func scanImports(source: string) string
     # Find all import "..." patterns in the source
-    lines := strings.Split(source, "\n")
+    lines := strpkg.Split(source, "\n")
     for line in lines
-        trimmed := strings.TrimSpace(line)
-        if not strings.HasPrefix(trimmed, "import ")
+        trimmed := strpkg.TrimSpace(line)
+        if not strpkg.HasPrefix(trimmed, "import ")
             continue
         # Extract the quoted path: import "path" or import "path" as alias
-        rest := strings.TrimPrefix(trimmed, "import ")
-        rest = strings.TrimSpace(rest)
+        rest := strpkg.TrimPrefix(trimmed, "import ")
+        rest = strpkg.TrimSpace(rest)
         if len(rest) == 0 or rest[0] != "\"" as byte
             continue
         # Find closing quote
-        end := strings.Index(rest[1:], "\"")
+        end := strpkg.Index(rest[1:], "\"")
         if end < 0
             continue
         pkg := rest[1:end + 1]
         # Check against allowlists
-        if strings.HasPrefix(pkg, "stdlib/")
+        if strpkg.HasPrefix(pkg, "stdlib/")
             if not allowedStdlib[pkg]
                 return pkg
         else
@@ -189,7 +189,7 @@ func handleRun(w: http.ResponseWriter, r: reference http.Request)
             defer func()
                 receive from execSem
             ()
-        default
+        otherwise
             http.Error(w, "server busy, try again shortly", 503)
             return
 
@@ -207,7 +207,7 @@ func handleRun(w: http.ResponseWriter, r: reference http.Request)
         http.Error(w, "invalid JSON", 400)
         return
 
-    if strings.TrimSpace(req.Source) == ""
+    if strpkg.TrimSpace(req.Source) == ""
         http.Error(w, "empty source", 400)
         return
 
