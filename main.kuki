@@ -5,7 +5,6 @@ import "mime"
 import "net/http"
 import "os"
 import "os/exec"
-import "path/filepath"
 # kukicha.org — entry point
 # Routes, server startup, static file serving.
 # Run: kukicha build . && ./kukicha.org
@@ -13,6 +12,7 @@ import "path/filepath"
 
 import "stdlib/datetime"
 import "stdlib/env"
+import "stdlib/files"
 import "stdlib/html"
 import "stdlib/http" as httphelper
 import "stdlib/json"
@@ -221,12 +221,12 @@ func handleRun(w: http.ResponseWriter, r: reference http.Request)
         return
 
     # Write source to a temp .kuki file
-    tmpDir := os.MkdirTemp("", "playground-*") onerr
+    tmpDir, cleanup := files.TempDirAuto("playground-") onerr
         http.Error(w, "internal error", 500)
         return
 
-    defer os.RemoveAll(tmpDir)
-    tmpFile := filepath.Join(tmpDir, "main.kuki")
+    defer cleanup()
+    tmpFile := files.Join(tmpDir, "main.kuki")
     os.WriteFile(tmpFile, req.Source as list of byte, 0o644) onerr
         http.Error(w, "internal error", 500)
         return
