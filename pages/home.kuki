@@ -15,12 +15,12 @@ func HomePage() html.Fragment
     features := CardGrid(list of Feature{
         Feature{
             title: "Readable by design",
-            body: "English operators, pipes that flow left-to-right, onerr for error handling, and named enums. Skim a file and follow what it does — no dense syntax to decode first.",
+            body: "English operators, pipes that flow left-to-right, onerr for error handling, and named enums.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/kukicha-quick-reference.md",
         },
         Feature{
             title: "Batteries included",
-            body: "fetch, concurrent, llm, mcp, db, shell, html, table, color — 40+ packages with the same readable API. Reach for a stdlib package, not a third-party dependency.",
+            body: "fetch, concurrent, llm, mcp, db, shell, html, table, color;  40+ packages with the same readable API. Reach for a stdlib package, not a third-party dependency.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md#stdlib-packages",
         },
         Feature{
@@ -43,7 +43,7 @@ func HomePage() html.Fragment
         },
         Feature{
             title: "Ships as one file",
-            body: "kukicha build produces a single static binary — copy it to a server and run. Built-in WASM support, no runtime, Go's concurrency.",
+            body: "kukicha build produces a single static binary,copy it to a server and run. Built-in WASM support, no runtime, Go's concurrency.",
             href: "https://github.com/kukichalang/kukicha#commands",
         },
     })

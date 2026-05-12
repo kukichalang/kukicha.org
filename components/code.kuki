@@ -7,7 +7,7 @@ import "stdlib/html"
 func CodeCompare() html.Fragment
     return html.Render('
         <h2 style="text-align: center">Familiar if you know Go</h2>
-        <p style="text-align: center; max-width: 44rem; margin: 0 auto 1.5rem;">Most Go compiles unchanged &mdash; <code>&amp;&amp;</code>, <code>*T</code>, <code>if err != nil</code>. Kukicha just adds readable forms on top. Mix and match in the same file.</p>
+        <p style="text-align: center; max-width: 44rem; margin: 0 auto 1.5rem;">Kukicha just adds readable forms on top. Mix and match in the same file.</p>
         <div class="code-compare">
             <div>
                 <h4>Plain Go</h4>
