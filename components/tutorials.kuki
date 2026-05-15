@@ -9,7 +9,9 @@ func Tutorials() html.Fragment
             <ot-tabs>
                 <div role="tablist">
                     <button role="tab">I know Go</button>
+                    <button role="tab">I write shell or Python</button>
                     <button role="tab">I want to make something</button>
+                    <button role="tab">I run cloud or ops</button>
                     <button role="tab">I&#39;m new to programming</button>
                 </div>
                 <div role="tabpanel">
@@ -22,10 +24,25 @@ func Tutorials() html.Fragment
                 </div>
                 <div role="tabpanel">
                     <ul>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/shell-to-kukicha.md">Kukicha for Shell Scripters</a>: Bash pipes meet types and real error handling</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/data-scripting-tutorial.md">Data &amp; AI Scripting</a>: Parse, transform, and classify with stdlib</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/cookbook.md">Cookbook</a>: Task-indexed recipes with Python and bash equivalents</li>
+                    </ul>
+                </div>
+                <div role="tabpanel">
+                    <ul>
                         <li><a href="https://github.com/kukichalang/game/blob/main/docs/tutorials/01-hello-world.md">Game Tutorials</a>: Eight lessons to build Breakout</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/cli-explorer-tutorial.md">CLI Tool</a>: Types, methods, and API data</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/web-app-tutorial.md">Web App</a>: HTTP servers and REST APIs</li>
                         <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/agent-workflow-tutorial.md">AI Agent Tools</a>: Building MCP servers</li>
+                    </ul>
+                </div>
+                <div role="tabpanel">
+                    <ul>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/aws-deployment-starter.md">AWS Deployment Starter</a>: First deploy helper from console concepts</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/gcp-deployment-starter.md">GCP Deployment Starter</a>: Same, for Google Cloud</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/production-patterns-tutorial.md">Production Patterns</a>: Databases, auth, retry logic</li>
+                        <li><a href="https://github.com/kukichalang/kukicha/blob/main/docs/tutorials/concurrent-url-health-checker.md">Concurrent URL Health Checker</a>: Pipes, goroutines, real workloads</li>
                     </ul>
                 </div>
                 <div role="tabpanel">

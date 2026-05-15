@@ -12,6 +12,24 @@ func HomePage() html.Fragment
 
     hero := Hero()
 
+    useCases := CardGrid(list of Feature{
+        Feature{
+            title: "AI integration",
+            body: "Prompt-injection-aware LLM calls, JSON-mode decoding, and MCP servers/clients without a framework. safe.Wrap untrusted input, chat.JSONMode for structured replies, mcp for tool servers.",
+            href: "https://github.com/kukichalang/kukicha/tree/main/examples/beads_kukicha",
+        },
+        Feature{
+            title: "Cloud & deploy automation",
+            body: "One static binary that drives cloud APIs from readable scripts. Drop kukicha build output onto a server and run, no runtime to install.",
+            href: "https://github.com/kukichalang/kukicha/tree/main/examples/gke-django-deploy",
+        },
+        Feature{
+            title: "Data & CLI scripting",
+            body: "Pipes, concurrent.MapWithLimit, table, regex, json; the stuff you'd reach for Python or shell for, in one typed, compiled binary.",
+            href: "https://github.com/kukichalang/kukicha/tree/main/examples/api-explorer",
+        },
+    })
+
     features := CardGrid(list of Feature{
         Feature{
             title: "Readable by design",
@@ -24,8 +42,8 @@ func HomePage() html.Fragment
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md#stdlib-packages",
         },
         Feature{
-            title: "No lock-in, ever",
-            body: "Rename a .go file to .kuki and it compiles unchanged. Run kukicha brew to convert any .kuki file back into standalone, idiomatic Go.",
+            title: "No lock-in",
+            body: "Rename a .go file to .kuki and it mostly compiles unchanged. Run kukicha brew to convert any .kuki file back into standalone, idiomatic Go.",
             href: "https://github.com/kukichalang/kukicha#commands",
         },
     })
@@ -33,12 +51,12 @@ func HomePage() html.Fragment
     security := CardGrid(list of Feature{
         Feature{
             title: "Safe by default",
-            body: "The compiler catches SQL injection, XSS, SSRF, path traversal, and command injection before your code runs. Errors are values, handled with onerr.",
+            body: "Compile-time lints flag SQL injection, XSS, SSRF, path traversal, command injection, and open redirects, paired with stdlib functions (safe.Wrap, fetch.NewExternal, http.SafeHTML). Errors are values, handled with onerr.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md#security--compiler-enforced-checks",
         },
         Feature{
             title: "Friendly stdlib",
-            body: "fetch.GetJson, slice.Filter, concurrent.MapWithLimit, sort.ByKey, safe.Wrap, table.PrintWithStyle. Reads the same whether your code is Kukicha forms or plain Go.",
+            body: "fetch.GetJson, slice.Filter, concurrent.MapWithLimit, sort.ByKey, safe.Wrap, table.PrintWithStyle. Reads the same whether your code has Kukicha s or plain Go.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md#stdlib-packages",
         },
         Feature{
@@ -52,4 +70,4 @@ func HomePage() html.Fragment
     code := CodeCompare()
     tutorials := Tutorials()
     footer := Footer()
-    return html.Join(nav, hero, source, features, code, security, tutorials, footer)
+    return html.Join(nav, hero, useCases, source, features, code, security, tutorials, footer)

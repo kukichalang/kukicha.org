@@ -11,7 +11,7 @@ func Hero() html.Fragment
                 <span class="badge">Readable</span>
                 <span class="badge">Single Binary</span>
             </p>
-            <p class="subtitle">A readable language that ships as a single binary, brewed from what Go leaves on the table. English operators, pipes, <code>onerr</code>, and a friendly stdlib; <code>fetch</code>, <code>concurrent</code>, <code>llm</code>, <code>table</code>, <code>color</code>.</p>
+            <p class="subtitle">A readable language that ships as a single binary, brewed from what Go leaves on the table. Built for AI integration, cloud automation, and everyday data/CLI scripting &mdash; with English operators, pipes, <code>onerr</code>, and a friendly stdlib (<code>fetch</code>, <code>concurrent</code>, <code>llm</code>, <code>table</code>, <code>color</code>).</p>
             <div class="hero-cta">
                 <div class="wasm-container"
                      id="wasm-container"
