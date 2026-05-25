@@ -56,7 +56,7 @@ func HomePage() html.Fragment
         },
         Feature{
             title: "Friendly stdlib",
-            body: "fetch.GetJson, slice.Filter, concurrent.MapWithLimit, sort.ByKey, safe.Wrap, table.PrintWithStyle. Reads the same whether your code has Kukicha s or plain Go.",
+            body: "fetch.GetJSON, slice.Filter, concurrent.MapWithLimit, sort.ByKey, safe.Wrap, table.PrintWithStyle. Reads the same whether your code has Kukicha s or plain Go.",
             href: "https://github.com/kukichalang/kukicha/blob/main/docs/SKILL.md#stdlib-packages",
         },
         Feature{
