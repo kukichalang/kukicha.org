@@ -27,19 +27,30 @@ RUN mkdir /warm && cd /warm && \
 # Runtime stage — Go toolchain + kukicha + pre-warmed module cache
 # Required for server-side playground compilation via kukicha run.
 FROM golang:1.26-bookworm
+
+# Non-root user; playground go-tool invocations run as this user too
+RUN groupadd -r app && useradd -r -g app -m app
+
 RUN go install github.com/kukichalang/kukicha/cmd/kukicha@v0.22.0
 
-# Copy pre-warmed Go module and build caches from warmup stage
+# Module cache — make world-readable so the app user can use it
 COPY --from=warmup /go/pkg/mod /go/pkg/mod
-COPY --from=warmup /root/.cache/go-build /root/.cache/go-build
+RUN chmod -R a+rX /go/pkg/mod
+
+# Build cache — place in the app user's home so go tools can write new entries
+COPY --from=warmup /root/.cache/go-build /home/app/.cache/go-build
+RUN chown -R app:app /home/app
 
 # Copy website binary and static assets from builder
-COPY --from=builder /src/kukicha.org /app/kukicha.org
-COPY --from=builder /src/static /app/static
+COPY --from=builder --chown=app:app /src/kukicha.org /app/kukicha.org
+COPY --from=builder --chown=app:app /src/static /app/static
 WORKDIR /app
 
 # Disable module proxy — all deps must come from the pre-warmed cache
 ENV GOPROXY=off
+# Point Go's cache tools to the app user's home
+ENV HOME=/home/app
 
 EXPOSE 8080
+USER app
 ENTRYPOINT ["/app/kukicha.org"]
