@@ -616,10 +616,12 @@ kukicha build <target>    # transpile + compile to binary
 kukicha run <target>      # transpile + compile + run
 kukicha fmt -w <target>   # format in place (use --check in CI)
 kukicha context <target>  # project metadata as JSON (for agents)
+kukicha context --stdlib  # stdlib API index as JSON: signatures + docs + security/deprecated/panics tags
 kukicha brew <target>     # convert .kuki → standalone .go (publication only)
+kukicha explain <code>    # title + summary + reproducer + fix recipe for a diagnostic code (--list to enumerate)
 ```
 
-Run `kukicha <cmd> --help` for flags. Common ones: `--json` (structured diagnostics on `check`/`build`/`run`/`fmt`), `--wasm` (build), `--vulncheck` (build), `--strict-onerr` (check), `--package-context` (single-file `check`/`build` that resolves refs into sibling `.kuki` files). Also: `kukicha audit`, `kukicha pack`, `kukicha skills {add,list,remove,verify}`. Run `kukicha fmt -w` before committing.
+Run `kukicha <cmd> --help` for flags. Common ones: `--json` (structured diagnostics on `check`/`build`/`run`/`fmt`), `--wasm` (build), `--vulncheck` (build), `--strict-onerr` (check), `--package-context` (single-file `check`/`build` that resolves refs into sibling `.kuki` files). Also: `kukicha audit`, `kukicha pack`, `kukicha skills {add,list,remove,verify,update}`. When the compiler emits a diagnostic with a stable code (e.g. `[semantic/deref-nullable]`), `kukicha explain <code>` prints the full recipe. Run `kukicha fmt -w` before committing.
 
 **Compiler directives** — `# kuki:...` comments attached above a declaration or statement:
 
@@ -742,7 +744,7 @@ The stdlib is extracted to `.kukicha/stdlib/` on `kukicha init` — **read the `
 
 **I/O & files.** `stdlib/files` (`Read`/`Write`/`Copy`/`List`/`Watch`/…), `stdlib/archive` (zip+tar.gz, zip-slip safe), `stdlib/sandbox` (filesystem jail for HTTP handlers), `stdlib/shell` (`Output`/`Lines`/`Capture` + `shell.New |> .Dir |> .Env |> .Stdin |> .Output()` builder).
 
-**HTTP & networking.** `stdlib/fetch` (client with builder, auth, retry, SSRF — `Get`/`SafeGet`/`GetJSON of T from url`), `stdlib/http` as `httphelper` (`JSON*` responders, `SafeRedirect`, `SafeHTML`), `stdlib/html` (auto-escaping components), `stdlib/netguard` (SSRF guards), `stdlib/url` (parse/build/encode), `stdlib/shellguard` (subprocess allowlist for agent ops, fail-closed), `stdlib/policy` (approval-gate variant for agent ops, fail-closed).
+**HTTP & networking.** `stdlib/fetch` (client with builder, auth, retry, SSRF — `Get`/`SafeGet`/`GetJSON of T from url`), `stdlib/http` as `httphelper` (`JSON*` responders, `SafeRedirect`, `SafeHTML`, `TrustedHosts` middleware, `RealIP` for client-IP behind a proxy), `stdlib/html` (auto-escaping components), `stdlib/netguard` (SSRF guards), `stdlib/url` (parse/build/encode, `CleanPath`/`IsSubpath` for traversal-safe paths), `stdlib/shellguard` (subprocess allowlist for agent ops, fail-closed), `stdlib/policy` (approval-gate variant for agent ops, fail-closed).
 
 **CLI & system.** `stdlib/cli` (flag/subcommand parser — prefer typed `BoolFlag`/`IntFlag`/`StringFlag` over generic `AddFlag`), `stdlib/input` (`Prompt`/`Confirm`/`Choose`, `NewForm`), `stdlib/table`, `stdlib/color`, `stdlib/term` (**single source of truth for tty/color/width — `IsTTY`/`VisibleWidth`/`PadRightVisible`**), `stdlib/log` (leveled structured logger), `stdlib/env` (`Get`/`GetOr`/`GetInt`/`GetBool`), `stdlib/must` (panic-on-error startup), `stdlib/signal` (`WaitFor`/`Context` with English signal names).
 
@@ -754,7 +756,7 @@ The stdlib is extracted to `.kukicha/stdlib/` on `kukicha init` — **read the `
 
 **DevOps.** `stdlib/git` (via `gh`), `stdlib/semver`, `stdlib/obs`.
 
-**AI & agents.** `stdlib/llm` (shared schema builders + unified `StreamEvent`/`Content` variants across providers), `stdlib/llm/chat`, `stdlib/llm/responses`, `stdlib/llm/anthropic` (same builder shape: `New |> System/User/Assistant |> Temperature/MaxTokens/Stream/Retry/AddTool |> Ask/Send/SendRaw`; chat-only: `AskJSON of T from prompt`, `AskStream`/`SendStream`), `stdlib/llm/embeddings` (OpenAI-compatible), `stdlib/llm/safe` (prompt-injection-resistant wrapping for adversarial input), `stdlib/mcp` (server + client; schema builders `Prop`/`Schema`/`Required`; `ToolWithOpts` for annotation hints — `ReadOnly`, `Destructive`, `Idempotent`, `OpenWorldHint`, `Title`; set `Enum` on a `SchemaProperty` to restrict allowed values).
+**AI & agents.** `stdlib/content` (unified `Content` variant enum re-exported by mcp + llm — Text/Thinking/Image/Audio/Link/Embedded/ToolUse/ToolResult/Reasoning; construct arms via `content.Text{...}`), `stdlib/llm` (shared schema builders + unified `StreamEvent` variant across providers), `stdlib/llm/chat`, `stdlib/llm/responses`, `stdlib/llm/anthropic` (same builder shape: `New |> System/User/Assistant |> Temperature/MaxTokens/Stream/Retry/AddTool |> Ask/Send/SendRaw`; chat-only: `AskJSON of T from prompt`, `AskStream`/`SendStream`), `stdlib/llm/embeddings` (OpenAI-compatible), `stdlib/llm/safe` (prompt-injection-resistant wrapping for adversarial input), `stdlib/mcp` (server + client; schema builders `Prop`/`Schema`/`Required`; `ToolWithOpts` for annotation hints — `ReadOnly`, `Destructive`, `Idempotent`, `OpenWorldHint`, `Title`; set `Enum` on a `SchemaProperty` to restrict allowed values).
 
 ```kukicha
 # Typed JSON decode — `of T from x` is the explicit-type-arg syntax
@@ -799,13 +801,14 @@ The compiler **rejects** these patterns in HTTP handlers (functions with `http.R
 |---------|-----|
 | `httphelper.HTML(w, nonLiteral)` | `httphelper.SafeHTML(w, content)` |
 | `fetch.Get(url)` in handler | `fetch.SafeGet(url)` (or `fetch.NewExternal(url) \|> ... \|> Do()` for builder) |
-| `files.Read(path)` in handler | `sandbox.New(root)` + `sandbox.Read(box, path)` |
+| `files.Read(path)` in handler | `url.CleanPath(path)` first to reject `..`/`%2e%2e`/`%2f`, then `sandbox.New(root)` + `sandbox.Read(box, cleaned)` |
 | `shell.Run("cmd {var}")` | `shell.Output("cmd", arg)` |
 | `httphelper.Redirect(w, r, nonLiteral)` | `httphelper.SafeRedirect(w, r, url, "host")` |
 | `html.Render("<script>...")` | Static `.js` file with `<script src="...">` |
 | `regex.Match(userPattern, ...)` (non-literal pattern) | `regex.MatchSafe(pattern, text)` returns error, or hoist with `regex.MustCompile` at init + `regex.MatchCompiled` |
+| `notify("https://{r.Host}/...")` / `f(r.Host)` (Host-header forgery) | Wrap handler with `httphelper.TrustedHosts(handler, allowed...)`, or compare `r.Host` to an allowlist before reading it |
 
-`http.SafeRedirect` rejects non-`http`/`https` schemes (e.g. `javascript:`, `data:`, `file:`), protocol-relative `//host`, and bare relative paths: only allow-listed hosts on absolute http(s) URLs are permitted.
+`http.SafeRedirect` rejects non-`http`/`https` schemes (e.g. `javascript:`, `data:`, `file:`), protocol-relative `//host`, and bare relative paths: only allow-listed hosts on absolute http(s) URLs are permitted. `http.TrustedHosts(handler, allowed...)` is the middleware form: install it once at the edge and `r.Host` becomes trustworthy for every downstream handler. For client-IP behind a proxy, `http.RealIP(r, trustedProxies...)` parses `X-Forwarded-For` / `X-Real-Ip` only when `r.RemoteAddr` matches a trusted CIDR. `url.CleanPath` / `url.IsSubpath` normalize user-supplied paths before they hit a route table or filesystem (rejects `..`, `%2e%2e`, `%2f`, backslashes, NUL).
 
 ---
 
