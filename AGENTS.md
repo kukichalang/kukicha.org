@@ -121,9 +121,31 @@ path := "{dir}\sep{file}"            # \sep → OS path separator at runtime
 # Raw strings (backticks) — no escapes, no interpolation
 prompt := `Reply JSON: {severity:1-5, kind, summary}`
 
+# Multi-line strings — auto-dedented to the indent of the closing delimiter.
+# Two flavors, both support {expr} interpolation and \{ \} escapes:
+
+# """...""" — triple-quoted. Use for prompts, markdown, long error messages.
+prompt := """
+    {preamble}
+    Classify GitHub issues. Reply JSON: \{severity:1-5, kind\}
+    """
+
+# '...' — single-quoted. Use when the content contains "..." (HTML, JSON-with-quotes).
+html := '
+    <article class="card" data-title="{title}">
+        <h3>{title}</h3>
+    </article>
+    '
+
 # Escape sequences: \n \t \r \\ \" \' \xHH \0-\377
 # Number literals: 42, 0xFF, 0o755, 0b1010, 3.14
 ```
+
+**Picking a string form:**
+- `"..."` — one-liners. Interpolation on.
+- `` `...` `` — content with `{` `}` literals (regex, JSON templates). No interpolation, no escapes.
+- `"""..."""` — multi-line prose (prompts, markdown). Interpolation on; escape literal braces with `\{` `\}`.
+- `'...'` — multi-line content with embedded double quotes (HTML, SQL). Interpolation on.
 
 ### Types
 
@@ -220,6 +242,8 @@ if not ok
 ### Variant Enums (Tagged Unions)
 
 Reach for variant enums when another language would force a sentinel value, `None`-overloading, or a `(T, ok)` boolean pair — the type system distinguishes the cases by name, and `switch` arms get exhaustiveness checking.
+
+The strongest fit is the **decode-at-boundary** pattern: a wire format or SSE stream is parsed once at the edge into a variant (e.g. `OpencodeEvent { MessageUpdated, PartUpdated, PartDelta, Reconnect }`), and downstream consumers `switch ... as v / when …` exhaustively — no string-typed `evt.Type` checks scattered across handlers. See `kukicha-shaped-problems.md` for the full pattern, including when *not* to reach for variants (flat SQLite rows, pure tag enums).
 
 ```kukicha
 enum Shape
@@ -586,7 +610,7 @@ Always use these aliases when the package name clashes — collisions cause comp
 ### Commands
 
 ```bash
-kukicha init [module]     # scaffold project + extract stdlib to .kukicha/
+kukicha init [module]     # scaffold project + extract stdlib to .kukicha/ (re-run to update after compiler upgrade)
 kukicha check <target>    # validate syntax (no codegen)
 kukicha build <target>    # transpile + compile to binary
 kukicha run <target>      # transpile + compile + run
@@ -595,7 +619,7 @@ kukicha context <target>  # project metadata as JSON (for agents)
 kukicha brew <target>     # convert .kuki → standalone .go (publication only)
 ```
 
-Run `kukicha <cmd> --help` for flags. Common ones: `--json` (structured diagnostics on `check`/`build`/`run`/`fmt`), `--wasm` (build), `--vulncheck` (build), `--strict-onerr` (check). Also: `kukicha audit`, `kukicha pack`, `kukicha skills {add,list,remove}`. Run `kukicha fmt -w` before committing.
+Run `kukicha <cmd> --help` for flags. Common ones: `--json` (structured diagnostics on `check`/`build`/`run`/`fmt`), `--wasm` (build), `--vulncheck` (build), `--strict-onerr` (check), `--package-context` (single-file `check`/`build` that resolves refs into sibling `.kuki` files). Also: `kukicha audit`, `kukicha pack`, `kukicha skills {add,list,remove,verify}`. Run `kukicha fmt -w` before committing.
 
 **Compiler directives** — `# kuki:...` comments attached above a declaration or statement:
 
@@ -606,6 +630,7 @@ Run `kukicha <cmd> --help` for flags. Common ones: `--json` (structured diagnost
 # kuki:validate "rules"   # struct field: generate Validate() (see the validate package)
 # kuki:returns N          # statement: declare return-arity of an unresolvable external Go call
 # kuki:typearg            # stdlib func: accepts `f of T from x` typed-decode syntax
+# kuki:embed PATTERN      # var: emit //go:embed PATTERN above `var name embed.FS` / `string` / `[]byte`
 ```
 
 `# kuki:returns N` is the escape hatch when `onerr` rejects a third-party Go call with *"return signature is unknown"* — `N` counts all Go returns including the trailing `error`. The Go stdlib is resolved live, so this is almost always for vendored modules.
@@ -893,6 +918,8 @@ bare type.
 
 
 **`in` / `not in` are membership operators**: `x in xs` works on lists (element comparison), maps (key lookup), and strings (substring). For lists with non-comparable element types (slices, maps, funcs as elements), use `slice.Contains` with a custom predicate. `in` also still drives `for` loops.
+
+**Signature smell — returns that all callers discard.** Rule 11 forbids `_ = call()` for sole-value discards, but multi-return destructuring (`_, err := f()`) is a different beast that the rule doesn't cover. When you find yourself writing it, check the other callers first: if two or more callers spell the same return slot as `_`, the signature is wrong. Drop the return rather than spreading discards across call sites. Common offenders: HTTP/RPC wrappers that return a status code nobody reads, helpers that surface an internal-bookkeeping value alongside the real result, and "and-related-thing" helpers (`loadFooAndBar`) where most callers only want one. Fix the signature, not the call sites.
 
 ---
 
