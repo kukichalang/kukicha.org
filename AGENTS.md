@@ -586,7 +586,7 @@ defer resource.Close()
 
 # Block form (emits defer func() { ... }())
 defer
-    if r := recover(); r != empty
+    if r := recover(); r isnt empty
         tx.Rollback()
         panic(r)
 ```
@@ -748,7 +748,7 @@ The stdlib is extracted to `.kukicha/stdlib/` on `kukicha init` — **read the `
 
 **CLI & system.** `stdlib/cli` (flag/subcommand parser — prefer typed `BoolFlag`/`IntFlag`/`StringFlag` over generic `AddFlag`), `stdlib/input` (`Prompt`/`Confirm`/`Choose`, `NewForm`), `stdlib/table`, `stdlib/color`, `stdlib/term` (**single source of truth for tty/color/width — `IsTTY`/`VisibleWidth`/`PadRightVisible`**), `stdlib/log` (leveled structured logger), `stdlib/env` (`Get`/`GetOr`/`GetInt`/`GetBool`), `stdlib/must` (panic-on-error startup), `stdlib/signal` (`WaitFor`/`Context` with English signal names).
 
-**Concurrency & resilience.** `stdlib/concurrent` (`Parallel`/`Map`/`Go`), `stdlib/ctx` as `ctxpkg`, `stdlib/retry` (backoff + circuit breaker via `NewBudget`/`BudgetExceeded`), `stdlib/datetime`.
+**Concurrency & resilience.** `stdlib/concurrent` (`Parallel`/`Map`/`Go`), `stdlib/bus` (in-process pub/sub with per-subscriber Observer flag: load-bearing subs propagate backpressure errors, observers silently drop and track a `Dropped` counter), `stdlib/ctx` as `ctxpkg`, `stdlib/retry` (backoff + circuit breaker via `NewBudget`/`BudgetExceeded`), `stdlib/datetime`.
 
 **Data & storage.** `stdlib/db` as `dbpkg` (SQL with struct scanning: `Query |> ScanAll of T`), `stdlib/sqlite` (WAL/foreign-keys defaults; queries go through `stdlib/db`), `stdlib/sqliteext` (register ncruces extensions — process-global, one-shot at startup), `stdlib/audit` (tamper-evident hash-chained ed25519-signed decision log for agents — `audit.Record` for decisions, `log.Info` for breadcrumbs).
 
