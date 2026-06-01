@@ -184,6 +184,7 @@ Rules:
 - `dereference x` on a `nullable reference T` is an error unless x is narrowed in the current branch (`if x isnt empty`, `if x equals empty: return`, or the Go-style `!= nil` / `== nil` forms).
 - `var p reference T` without an initializer is rejected — either initialize it or declare it `nullable reference T`.
 - Struct fields can't be bare `reference T` (the zero value would be `empty`); declare them `nullable reference T`.
+- **Calling a `reference func(...)` field needs no `dereference`** — after narrowing, just call it: `wh.on_connect(args)`. The compiler inserts the pointer deref for you. Writing `dereference wh.on_connect(args)` is a trap: `dereference` binds to the whole call, so it reads as "deref the receiver `wh`," not "deref the function pointer." It still compiles to the right thing now, but the bare call is what you mean.
 
 ```kukicha
 func Greet(u: reference User) string         # u is guaranteed non-empty
